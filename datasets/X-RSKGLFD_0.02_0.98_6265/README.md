@@ -77,7 +77,7 @@ LGBMClassifier(boosting_type='goss', class_weight=None, colsample_bytree=1.0,
 </details>
 
 <details>
-<summary>Expected performance (200 experiments per ML method)</summary>
+<summary>Expected performance (100 different random seeds)</summary>
 <img src='X-RSKGLFD_0.02_0.98_6265-box.svg' width=40% />
 </details>
 
@@ -106,4 +106,4 @@ LGBMClassifier(boosting_type='goss', class_weight=None, colsample_bytree=1.0,
 <img src='X-RSKGLFD_0.02_0.98_6265-corr.svg' width=40% />
 </details>
 
-[**Pandas Profiling Report**](https://github.io/athril/digen-test/docs/profile/X-RSKGLFD_0.02_0.98_6265.html)
+[**Pandas Profiling Report**](https://epistasislab.github.io/digen/docs/profile/X-RSKGLFD_0.02_0.98_6265.html)

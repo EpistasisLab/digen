@@ -77,7 +77,7 @@ LGBMClassifier(boosting_type='gbdt', class_weight=None, colsample_bytree=1.0,
 </details>
 
 <details>
-<summary>Expected performance (200 experiments per ML method)</summary>
+<summary>Expected performance (100 different random seeds)</summary>
 <img src='SGXFLKDR_0.132_0.823_8322-box.svg' width=40% />
 </details>
 
@@ -106,4 +106,4 @@ LGBMClassifier(boosting_type='gbdt', class_weight=None, colsample_bytree=1.0,
 <img src='SGXFLKDR_0.132_0.823_8322-corr.svg' width=40% />
 </details>
 
-[**Pandas Profiling Report**](https://github.io/athril/digen-test/docs/profile/SGXFLKDR_0.132_0.823_8322.html)
+[**Pandas Profiling Report**](https://epistasislab.github.io/digen/docs/profile/SGXFLKDR_0.132_0.823_8322.html)
