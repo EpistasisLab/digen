@@ -1,0 +1,3 @@
+# Welcome to DIGEN: Diverse Generative ML Benchmark!
+
+More content to come soon...
