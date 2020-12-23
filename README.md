@@ -11,7 +11,8 @@ Each dataset comes also with Reveiver-Operating Characteristics (ROC) and Precis
 Apart from the datasets, DIGEN provides a comprehensive toolbox for analyzing the performance of a chosen ML method.
 DIGEN uses[Optuna](!https://github.com/optuna/optuna), a state of the art framework for optimizing hyper-parameters 
 
-More to follow...
+Please refer to our online documentation at[https://epistasislab.github.io/digen](!https://epistasislab.github.io/digen)
+
 
 # Benchmarked ML classifiers:
 

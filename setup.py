@@ -19,7 +19,6 @@ setup(
     license='MIT',
     description='DIGEN: Diverse Generative Benchmark',
     zip_safe=True,
-    python_requires='>=3.7',
     install_requires=['pandas>=1.0.5',
                     'scikit-learn>=0.19.0',
                     'optuna>=1.3.0'
