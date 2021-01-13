@@ -105,4 +105,4 @@ LGBMClassifier(boosting_type='gbdt', class_weight=None, colsample_bytree=1.0,
 <img src='SLXFGKDR_0.158_0.814_7270-corr.svg' width=40% />
 </details>
 
-[**Pandas Profiling Report**](https://epistasislab.github.io/digen/docs/profile/SLXFGKDR_0.158_0.814_7270.html)
+[**Pandas Profiling Report**](https://epistasislab.github.io/digen/profile/SLXFGKDR_0.158_0.814_7270.html)

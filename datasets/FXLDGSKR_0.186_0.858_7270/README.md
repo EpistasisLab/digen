@@ -106,4 +106,4 @@ LGBMClassifier(boosting_type='dart', class_weight=None, colsample_bytree=1.0,
 <img src='FXLDGSKR_0.186_0.858_7270-corr.svg' width=40% />
 </details>
 
-[**Pandas Profiling Report**](https://epistasislab.github.io/digen/docs/profile/FXLDGSKR_0.186_0.858_7270.html)
+[**Pandas Profiling Report**](https://epistasislab.github.io/digen/profile/FXLDGSKR_0.186_0.858_7270.html)

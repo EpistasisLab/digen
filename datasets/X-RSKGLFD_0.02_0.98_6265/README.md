@@ -106,4 +106,4 @@ LGBMClassifier(boosting_type='goss', class_weight=None, colsample_bytree=1.0,
 <img src='X-RSKGLFD_0.02_0.98_6265-corr.svg' width=40% />
 </details>
 
-[**Pandas Profiling Report**](https://epistasislab.github.io/digen/docs/profile/X-RSKGLFD_0.02_0.98_6265.html)
+[**Pandas Profiling Report**](https://epistasislab.github.io/digen/profile/X-RSKGLFD_0.02_0.98_6265.html)
