@@ -1,4 +1,4 @@
-# Dataset: digen1_6265(RSXG-KLFD_0.024_0.976_6265)
+# Dataset: digen1_6265 (RSXG-KLFD_0.024_0.976_6265)
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -13,7 +13,7 @@
 
 
 <details>
-<summary>Parameters of tuned ML methods</summary>
+<summary>Parameters of tuned ML methods (200 optimizations)</summary>
 
 
 ```
@@ -50,7 +50,7 @@ SVC(C=8500.923846513155, class_weight='balanced', coef0=7.2, degree=2,
 </details>
 
 <details>
-<summary>Expected performance (200 experiments per ML method)</summary>
+<summary>Expected performance (100 optimizations starting from different random seed)</summary>
 <img src='digen1_6265-box.svg' width=40% />
 </details>
 
@@ -79,4 +79,4 @@ SVC(C=8500.923846513155, class_weight='balanced', coef0=7.2, degree=2,
 <img src='digen1_6265-corr.svg' width=40% />
 </details>
 
-[**Pandas Profiling Report**](https://github.io/athril/digen-test/docs/profile/digen1_6265.html)
+[**Pandas Profiling Report**](https://epistasislab.github.io/digen/profile/digen1_6265.html)

@@ -1,4 +1,4 @@
-# Dataset: digen4_860(XLSFKGDR_0.188_0.729_860)
+# Dataset: digen4_860 (XLSFKGDR_0.188_0.729_860)
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -13,7 +13,7 @@
 
 
 <details>
-<summary>Parameters of tuned ML methods</summary>
+<summary>Parameters of tuned ML methods (200 optimizations)</summary>
 
 
 ```
@@ -49,7 +49,7 @@ SVC(C=48.74266137429492, gamma='auto', kernel='poly', probability=True,
 </details>
 
 <details>
-<summary>Expected performance (200 experiments per ML method)</summary>
+<summary>Expected performance (100 optimizations starting from different random seed)</summary>
 <img src='digen4_860-box.svg' width=40% />
 </details>
 
@@ -78,4 +78,4 @@ SVC(C=48.74266137429492, gamma='auto', kernel='poly', probability=True,
 <img src='digen4_860-corr.svg' width=40% />
 </details>
 
-[**Pandas Profiling Report**](https://github.io/athril/digen-test/docs/profile/digen4_860.html)
+[**Pandas Profiling Report**](https://epistasislab.github.io/digen/profile/digen4_860.html)

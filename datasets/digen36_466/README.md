@@ -1,4 +1,4 @@
-# Dataset: digen36_466(SXFL-KGDR_0.134_0.746_466)
+# Dataset: digen36_466 (SXFL-KGDR_0.134_0.746_466)
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -13,7 +13,7 @@
 
 
 <details>
-<summary>Parameters of tuned ML methods</summary>
+<summary>Parameters of tuned ML methods (200 optimizations)</summary>
 
 
 ```
@@ -52,7 +52,7 @@ SVC(C=28003.590453299326, class_weight='balanced', coef0=5.7, degree=2,
 </details>
 
 <details>
-<summary>Expected performance (200 experiments per ML method)</summary>
+<summary>Expected performance (100 optimizations starting from different random seed)</summary>
 <img src='digen36_466-box.svg' width=40% />
 </details>
 
@@ -81,4 +81,4 @@ SVC(C=28003.590453299326, class_weight='balanced', coef0=5.7, degree=2,
 <img src='digen36_466-corr.svg' width=40% />
 </details>
 
-[**Pandas Profiling Report**](https://github.io/athril/digen-test/docs/profile/digen36_466.html)
+[**Pandas Profiling Report**](https://epistasislab.github.io/digen/profile/digen36_466.html)
