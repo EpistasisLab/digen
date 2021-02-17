@@ -1,4 +1,4 @@
-# Dataset: digen2_6949(XGLFSKDR_0.201_0.78_6949)
+# Dataset: digen2_6949 (XGLFSKDR_0.201_0.78_6949)
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -13,7 +13,7 @@
 
 
 <details>
-<summary>Parameters of tuned ML methods</summary>
+<summary>Parameters of tuned ML methods (200 optimizations)</summary>
 
 
 ```
@@ -47,7 +47,7 @@ SVC(C=37.06732818290728, coef0=6.6000000000000005, kernel='poly',
 </details>
 
 <details>
-<summary>Expected performance (200 experiments per ML method)</summary>
+<summary>Expected performance (100 optimizations starting from different random seed)</summary>
 <img src='digen2_6949-box.svg' width=40% />
 </details>
 
@@ -76,4 +76,4 @@ SVC(C=37.06732818290728, coef0=6.6000000000000005, kernel='poly',
 <img src='digen2_6949-corr.svg' width=40% />
 </details>
 
-[**Pandas Profiling Report**](https://github.io/athril/digen-test/docs/profile/digen2_6949.html)
+[**Pandas Profiling Report**](https://epistasislab.github.io/digen/profile/digen2_6949.html)

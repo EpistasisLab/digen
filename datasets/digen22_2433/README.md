@@ -1,4 +1,4 @@
-# Dataset: digen22_2433(F-XGLSKDR_0.168_0.868_2433)
+# Dataset: digen22_2433 (F-XGLSKDR_0.168_0.868_2433)
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -13,7 +13,7 @@
 
 
 <details>
-<summary>Parameters of tuned ML methods</summary>
+<summary>Parameters of tuned ML methods (200 optimizations)</summary>
 
 
 ```
@@ -50,7 +50,7 @@ SVC(C=146.56767100206685, class_weight='balanced', coef0=9.8, degree=2,
 </details>
 
 <details>
-<summary>Expected performance (200 experiments per ML method)</summary>
+<summary>Expected performance (100 optimizations starting from different random seed)</summary>
 <img src='digen22_2433-box.svg' width=40% />
 </details>
 
@@ -79,4 +79,4 @@ SVC(C=146.56767100206685, class_weight='balanced', coef0=9.8, degree=2,
 <img src='digen22_2433-corr.svg' width=40% />
 </details>
 
-[**Pandas Profiling Report**](https://github.io/athril/digen-test/docs/profile/digen22_2433.html)
+[**Pandas Profiling Report**](https://epistasislab.github.io/digen/profile/digen22_2433.html)

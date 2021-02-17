@@ -1,4 +1,4 @@
-# Dataset: digen14_769(XGSLFKRD_0.185_0.734_769)
+# Dataset: digen14_769 (XGSLFKRD_0.185_0.734_769)
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -13,7 +13,7 @@
 
 
 <details>
-<summary>Parameters of tuned ML methods</summary>
+<summary>Parameters of tuned ML methods (200 optimizations)</summary>
 
 
 ```
@@ -48,7 +48,7 @@ SVC(C=1951.087099951524, class_weight='balanced', kernel='poly',
 </details>
 
 <details>
-<summary>Expected performance (200 experiments per ML method)</summary>
+<summary>Expected performance (100 optimizations starting from different random seed)</summary>
 <img src='digen14_769-box.svg' width=40% />
 </details>
 
@@ -77,4 +77,4 @@ SVC(C=1951.087099951524, class_weight='balanced', kernel='poly',
 <img src='digen14_769-corr.svg' width=40% />
 </details>
 
-[**Pandas Profiling Report**](https://github.io/athril/digen-test/docs/profile/digen14_769.html)
+[**Pandas Profiling Report**](https://epistasislab.github.io/digen/profile/digen14_769.html)

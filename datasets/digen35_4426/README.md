@@ -1,4 +1,4 @@
-# Dataset: digen35_4426(GXLSFKDR_0.187_0.756_4426)
+# Dataset: digen35_4426 (GXLSFKDR_0.187_0.756_4426)
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -13,7 +13,7 @@
 
 
 <details>
-<summary>Parameters of tuned ML methods</summary>
+<summary>Parameters of tuned ML methods (200 optimizations)</summary>
 
 
 ```
@@ -49,7 +49,7 @@ SVC(C=317.6179888507738, coef0=9.0, kernel='poly', probability=True,
 </details>
 
 <details>
-<summary>Expected performance (200 experiments per ML method)</summary>
+<summary>Expected performance (100 optimizations starting from different random seed)</summary>
 <img src='digen35_4426-box.svg' width=40% />
 </details>
 
@@ -78,4 +78,4 @@ SVC(C=317.6179888507738, coef0=9.0, kernel='poly', probability=True,
 <img src='digen35_4426-corr.svg' width=40% />
 </details>
 
-[**Pandas Profiling Report**](https://github.io/athril/digen-test/docs/profile/digen35_4426.html)
+[**Pandas Profiling Report**](https://epistasislab.github.io/digen/profile/digen35_4426.html)
