@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Copyright (c) 2020 Patryk Orzechowski | Epistasis Lab | University of Pennsylvania
+Copyright (c) 2021 Patryk Orzechowski | Epistasis Lab | University of Pennsylvania
 
 DIGEN was developed at the University of Pennsylvania by Patryk Orzechowski (patryk.orzechowski@gmail.com)
 
@@ -62,7 +62,7 @@ def params_KNeighborsClassifier(trial):
         'metric' : trial.suggest_categorical('metric', ['euclidean', 'minkowski'])
     }
 
-def params_DecisionTree(trial):
+def params_DecisionTreeClassifier(trial):
     return  {
         'criterion' : trial.suggest_categorical('criterion',['gini', 'entropy']),
         'max_depth' : trial.suggest_int('max_depth', 1, 10),
@@ -88,7 +88,7 @@ def params_SVC(trial):
     }
 
 def params_RandomForestClassifier(trial):
-    return {
+    params = {
         'n_estimators' : trial.suggest_int('n_estimators',10,100),
         'criterion' : trial.suggest_categorical(name='criterion',choices=['gini', 'entropy']), 
         'max_depth' : trial.suggest_int('max_depth', 1, 10),
@@ -97,12 +97,13 @@ def params_RandomForestClassifier(trial):
         'min_samples_split' : trial.suggest_int('min_samples_split', 2, 20),
         'min_samples_leaf' : trial.suggest_int('min_samples_leaf', 1, 20),
     }
+    return params
 
 
 
 
 def params_GradientBoostingClassifier(trial):
-    return {
+    params = {
         'loss' : trial.suggest_categorical(name='loss',choices=['deviance', 'exponential']),
        'learning_rate' : trial.suggest_loguniform('learning_rate', 1e-2, 1),
         'min_samples_leaf' : trial.suggest_int('min_samples_leaf', 1, 200),
@@ -112,10 +113,11 @@ def params_GradientBoostingClassifier(trial):
         'n_iter_no_change' : trial.suggest_int('n_iter_no_change', 1, 20),
         'validation_fraction' : trial.suggest_discrete_uniform('validation_fraction', 0.01, 0.31, 0.01)
     }
+    return params
 
 def params_XGBClassifier(trial):
     return {
-            'booster' : trial.suggest_categorical(name='booster',choices=['gbtree', 'gblinear', 'dart']), 
+            'booster' : trial.suggest_categorical(name='booster',choices=['gbtree', 'dart']),
             'n_estimators' : trial.suggest_int('n_estimators',10,100),
             'objective' : 'binary:logistic',
             'reg_lambda' : trial.suggest_loguniform('reg_lambda', 1e-5, 1e2),
@@ -123,21 +125,30 @@ def params_XGBClassifier(trial):
             'gamma' : trial.suggest_discrete_uniform('gamma', 0, 0.5, 0.1),
             'eta' : trial.suggest_loguniform('eta', 1e-8, 1),
             'max_depth' : trial.suggest_int('max_depth',1,10),
-            'eval_metric' : 'logloss'
+            'eval_metric' : 'logloss',
+            'tree_method' : 'exact',
+            'nthread' : 1,
+            'use_label_encoder' : False,
         }
 
 
 
 
 def params_LGBMClassifier(trial):
-    return {
+    params= {
         'objective' : 'binary',
         'metric' : 'binary_logloss',
         'boosting_type' : trial.suggest_categorical(name='boosting_type',choices=['gbdt', 'dart', 'goss']),
         'num_leaves' : trial.suggest_int('num_leaves', 2,256),
         'max_depth' : trial.suggest_int('max_depth', 1, 10 ),
         'n_estimators' : trial.suggest_int('n_estimators',10,100), #200-6000 by 200
+        'deterministic' : True,
+        'force_row_wise' : True,
+        'njobs' : 1,
     }
+    if 2**params['max_depth']>params['num_leaves']:
+        params['num_leaves']=2**params['max_depth']
+    return params
 
 
 
@@ -147,7 +158,7 @@ def set_hyper_params(trial,est, n_features=1):
     elif est == 'SVC':
         return params_SVC(trial)
     elif est == 'DecisionTreeClassifier':
-        return params_DecisionTree(trial)
+        return params_DecisionTreeClassifier(trial)
     elif est == 'RandomForestClassifier':
         return params_RandomForestClassifier(trial)
     elif est == 'LGBMClassifier':

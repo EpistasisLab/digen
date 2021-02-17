@@ -26,7 +26,7 @@ suffix = '.tsv'
 
 
 import os
-import pkgutil
+#import pkgutil
 
 
 import pandas as pd
@@ -34,8 +34,8 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 import optuna
-
-
+import pickle
+import random
 
 
 from sklearn.metrics import roc_auc_score
@@ -44,7 +44,13 @@ from sklearn.model_selection import train_test_split, StratifiedKFold
 from io import StringIO
 from sklearn.metrics import roc_auc_score, roc_curve, precision_score, auc, recall_score, precision_recall_curve, f1_score
 from xgboost import XGBClassifier
-from digen.dataset import Dataset
+from matplotlib import rcParams
+rcParams.update({'figure.autolayout': True})
+
+from . import initialize
+from .dataset import Dataset
+
+
 
 class Benchmark:
     '''
@@ -68,59 +74,82 @@ class Benchmark:
         Number of splits for k-fold cross validation
 
     '''
-    
-    def __init__(self, n_trials=200, timeout=10000, n_splits=10):
-        #data = pkgutil.get_data('digen', 'stats.csv')
-        #df = pd.read_csv(StringIO(data.decode("utf-8")) , sep='\t', compression='gzip')
-        #df = pd.read_csv(StringIO(data.decode("utf-8")) , sep=',')
 
-        df = pd.read_csv('digen/chartsdata.tsv', compression='gzip', sep='\t')
+    def __init__(self, n_trials=200, timeout=10000, n_splits=10):
+
+        data = initialize()
+        df=pd.DataFrame(data)
+        assert(len(df) > 0)
         df['fpr'] = df['fpr'].str.slice(1,-1).str.split(', ').apply(lambda x : np.array([float(i) for i in x]))
         df['tpr'] = df['tpr'].str.slice(1,-1).str.split(', ').apply(lambda x : np.array([float(i) for i in x]))
         df['prec'] = df['prec'].str.slice(1,-1).str.split(', ').apply(lambda x : np.array([float(i) for i in x]))
         df['rec'] = df['rec'].str.slice(1,-1).str.split(', ').apply(lambda x : np.array([float(i) for i in x]))
         self.data = df
-
-
         self.dataset_names = pd.unique(df['dataset']).tolist()
         self.n_trials = n_trials
         self.timeout = timeout
         self.n_splits = n_splits
 
 
+
     def list_datasets(self):
         '''
         This method lists all datasets
-        
+
         Returns
         --------
         dataset_names : a list of strings
             List of all names of the datasets included in DIGEN.
         '''
-#        print(str(self.dataset_names))
         return self.dataset_names
 
 
 
-    def optimize(self, est, parameter_scopes, datasets=None, storage='sqlite:///default.db'):
-        '''
-        The method that optimizes hyper-parameters for a single or multiple DIGEN datasets.
-        
+    def load_dataset(self, dataset_name, separate_target=False, local_cache_dir=None):
+
+        """Downloads a dataset from the DIGEN and returns it. For convenience, instead of using Dataset interface.
+
         Parameters
         ----------
-        
+        dataset_name : str
+            The name of the data set to load from DIGEN.
+        separate_target : bool (default: False)
+            Should the target variable be kept within the array in scikit-learn format, or the features separate as NumPy arrays.
+        local_cache_dir: str (default: None)
+            The directory on your local machine to store the data files.
+            If None, then the local data cache will not be used and the datasets downloaded from Github.
+
+        Returns
+        ----------
+        dataset: pd.DataFrame or (array-like, array-like)
+            if separate_target == False: A pandas DataFrame containing the fetched data set.
+            if separate_target == True: A tuple of NumPy arrays containing (features, labels)
+
+        """
+
+        dataset = Dataset(dataset_name)
+        return dataset.load_dataset(separate_target=separate_target, local_cache_dir=local_cache_dir)
+
+
+
+    def optimize(self, est, parameter_scopes, datasets=None, storage='sqlite:///default.db', local_cache_dir=None):
+        '''
+        The method that optimizes hyper-parameters for a single or multiple DIGEN datasets.
+
+        Parameters
+        ----------
+
         est : sklearn.base.BaseEstimator
             A method that will be optimized and benchmarked against DIGEN.
-            
+
         parameter_scopes : dict
             A dictionary containing hyper parameters of the benchmarked ML method as well as their distributions.
             Refer to Optuna Trial:
             https://optuna.readthedocs.io/en/stable/faq.html#objective-func-additional-args
             https://optuna.readthedocs.io/en/v1.4.0/reference/trial.html
-                                                                 
-    
+
         datasets : a string or a list
-            The name(s) of the dataset(s) fro DIGEN that will be run on.
+            The name(s) of the dataset(s) that DIGEN will be run on.
 
         storage : string, default: local file named default.db
             The link to SQLite dataset which will store the optimizations from Optuna.
@@ -137,6 +166,11 @@ class Benchmark:
 
             dataset = Dataset(dataset_name)
             random_state = dataset.get_random_state(dataset_name)
+            random.seed(random_state)
+            np.random.seed(random_state)
+
+            self.random_state=random.getstate()
+            self.random_state_np=np.random.get_state()
 
             sampler = optuna.samplers.TPESampler(seed=random_state)  # Make the sampler behave in a deterministic way.
             study = optuna.create_study(study_name=dataset_name + '-' +  est.__class__.__name__ ,
@@ -145,33 +179,37 @@ class Benchmark:
                                   storage=storage, load_if_exists=True)
 
 
-            X, y = self.load_dataset(dataset_name, separate_target=True)
-            print(X)
+#            X, y = dataset.load_dataset(dataset_name, separate_target=True, local_cache_dir=local_cache_dir)
+            X, y = dataset.load_dataset(separate_target=True, local_cache_dir=local_cache_dir)
+
             X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=0.2, random_state=random_state)
 
             study.optimize(lambda trial: self._objective(trial, X_train, y_train, est, parameter_scopes, random_state), n_trials=self.n_trials, timeout=self.timeout)
             best_models[dataset_name] = clone(est).set_params(**study.best_trial.user_attrs['params'])
-            print(str(best_models))
+#            best_models[dataset_name] = clone(est.__class__(**study.best_trial.user_attrs['params']))
+#            print(str(best_models))
         return best_models
 
-            
 
 
-    def evaluate(self, est, dataset_name):
+
+    def evaluate(self, est, dataset_name, local_cache_dir=None):
         '''
         A method that calculates different performance metrics for the ML method with parameters.
         This function doesn't tune the parameters.
-        
+
         Parameters
         ----------
-        
+
         est : sklearn.base.BaseEstimator
             A method that will be timized and benchmarked against DIGEN.
 
         '''
         dataset = Dataset(dataset_name)
         random_state = dataset.get_random_state(dataset_name)
-        X, y = self.load_dataset(dataset_name, separate_target=True)
+
+
+        X, y = dataset.load_dataset(separate_target=True, local_cache_dir=local_cache_dir)
         X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=0.2, random_state=random_state)	
 
         est.fit(X_train, y_train)
@@ -197,75 +235,13 @@ class Benchmark:
 
 
 
-    def load_dataset(self, dataset_name, separate_target=False, local_cache_dir='datasets'):
-        """Downloads a dataset from the DIGEN and returns it.
-
-        Parameters
-        ----------
-        dataset_name : str
-            The name of the data set to load from DIGEN.
-        separate_target : bool (default: False)
-            Should the target variable be kept within the array in scikit-learn format, or the features separate as NumPy arrays.
-        local_cache_dir: str (default: None)
-            The directory on your local machine to store the data files.
-            If None, then the local data cache will not be used and the datasets downloaded from Github.
-
-        Returns
-        ----------
-        dataset: pd.DataFrame or (array-like, array-like)
-            if separate_target == False: A pandas DataFrame containing the fetched data set.
-            if separate_target == True: A tuple of NumPy arrays containing (features, labels)
-
-        """
-#        if dataset_name not in dataset_names:
-#            raise ValueError('Dataset not found in DIGEN.')
-
-        if local_cache_dir is None:
-            dataset_path = get_dataset_url(GITHUB_URL, dataset_name, suffix)
-        else:
-            dataset_path = os.path.join(local_cache_dir, dataset_name,
-                                        dataset_name+suffix)
-        dataset = pd.read_csv(dataset_path, sep='\t', compression='gzip')
-
-        if not os.path.exists(dataset_path):
-            dataset_dir = os.path.split(dataset_path)[0]
-            # cache the result
-            if not os.path.isdir(dataset_dir):
-                os.makedirs(dataset_dir)
-                dataset.to_csv(dataset_path, sep='\t', compression='gzip',
-                        index=False)
-        # prepare the output
-        if separate_target:
-            X = dataset.drop('target', axis=1).values
-            y = dataset['target'].values
-
-            return (X, y)
-        else:
-            return dataset
-
-
-    def get_dataset_url(self, GITHUB_URL, dataset_name, suffix):
-        '''
-        A method that downloads from DIGEN a dataset dataset_name from GITHUB_URL.
-        '''
-        dataset_url = '{GITHUB_URL}/{DATASET_NAME}/{DATASET_NAME}{SUFFIX}'.format(
-                                    GITHUB_URL=GITHUB_URL,
-                                    DATASET_NAME=dataset_name,
-                                    SUFFIX=suffix
-                                    )
-
-        re = requests.get(dataset_url)
-        if re.status_code != 200:
-            raise ValueError('Dataset not found in DIGEN.')
-        return dataset_url
-
-
 
     def _objective(self, trial, X, y, estimator, parameter_scopes, random_state):
         '''
         An internal method that sets Optuna parameters and objective for hyper-parameter optimization
         '''
         est = clone(estimator).set_params(**parameter_scopes(trial))
+#        est = clone(estimator.__class__(**parameter_scopes(trial)))
 
         for a in ['random_state','seed']:
             if hasattr(est,a):
@@ -303,66 +279,76 @@ class Benchmark:
 
 
 
-    def plot_auroc(self, dataset_name, new_results=None):
+
+    def plot_roc(self, dataset_name, ax=None, new_results=None, **kwargs):
         '''
         A method that plots an ROC curve chart for a given dataset with methods included in DIGEN with or without the additional benchmarked method.
-        
+
         Parameters
         ----------
         dataset_name : str
             The name of the data set to load from DIGEN.
         new_result : dict
-            The result of evaluation of the given estimator on the datase_name 
+            The result of evaluation of the given estimator on the dataset_name 
             For further reference, see: evaluate 
-        
+
         '''
-        assert(isinstanceof(new_results, dict))
+
         df=self.data[self.data['dataset'] == dataset_name]
         df.reset_index(inplace=True)
         assert(len(df)>0)
         linestyles = ['-', '--', '-.', ':', 'solid', 'dashed', 'dashdot', 'dotted']
         colors = ['0.4','0.4','0.4','0.4','0.8','0.8','0.8','0.8']
 
+
+
+        if ax is None:
+            fig, ax = plt.subplots(figsize=(16,12))
+
         if new_results is not None:
-            df.append(new_results)
+            assert(isinstance(new_results, dict))
+            df=df.append(new_results, ignore_index=True)
             linestyles.append('-')
-            color.append('red')
-        fig = plt.figure(figsize=(16,12))
+            colors.append('red')
         linestyles = iter(linestyles)
         colors = iter(colors)
         for i in df.index:
-          #  print(result_table.loc[i]['fpr'])
-            plt.plot(df.loc[i]['fpr'], 
-                df.loc[i]['tpr'], 
+            ax.plot(df.loc[i]['fpr'],
+                df.loc[i]['tpr'],
                 color = next(colors), linestyle=next(linestyles),
-                label = "{}, AUC={:.3f}".format(i, df.loc[i]['auroc']))
+                label = "{}, AUC={:.3f}".format(df.loc[i]['classifier'], df.loc[i]['auroc']), **kwargs)
 
-        plt.plot([0,1], [0,1], color='black', linestyle='--')
-        plt.xticks(np.arange(0.0, 1.1, step=0.1), fontsize=24)
-        plt.xlabel("False Positive Rate", fontsize=28)
-        plt.yticks(np.arange(0.0, 1.1, step=0.1), fontsize=24)
-        plt.ylabel("True Positive Rate", fontsize=28)
-        plt.title('ROC Curve Comparison', fontweight='bold', fontsize=15)
-        plt.legend(prop={'size':13}, loc='lower right')
-        return fig
+        ax.plot([0,1], [0,1], color='black', linestyle='--')
+        ax.set_xticks(np.arange(0.0, 1.1, step=0.1))
+        ax.set_yticks(np.arange(0.0, 1.1, step=0.1))
+        ax.tick_params(axis='both', which='major', labelsize=20)
+        ax.set_xlabel("False Positive Rate", fontsize=24)
+        ax.set_ylabel("True Positive Rate", fontsize=24)
+        ax.set_title('ROC Curves Comparison', fontweight='bold', fontsize=28)
+        ax.legend(prop={'size':13}, loc='lower right')
+        plt.gcf().subplots_adjust(bottom=0.15)
+        return fig, ax
 
 
 
-    def plot_auprc(self, dataset_name, new_results=None):
+    def plot_prc(self, dataset_name, ax=None, new_results=None, **kwargs):
+
         '''
         A method that plots an PRC curve chart for a given dataset with methods included in DIGEN with or without the additional benchmarked method.
-        
+
         Parameters
         ----------
         dataset_name : str
             The name of the data set to load from DIGEN.
         new_result : dict
-            The result of evaluation of the given estimator on the datase_name 
+            The result of evaluation of the given estimator on the dataset_name 
             For further reference, see: evaluate 
-        
         '''
-        assert(isinstanceof(new_results,dict))
-        df = self.data[self.data['dataset']==dataset_name]
+
+
+
+        df=self.data[self.data['dataset'] == dataset_name]
+
         df.reset_index(inplace=True)
         assert(len(df)>0)
         fig = plt.figure(figsize=(16,12))
@@ -370,29 +356,157 @@ class Benchmark:
         colors = ['0.4','0.4','0.4','0.4','0.8','0.8','0.8','0.8']
 
         if new_results is not None:
-            df.append(est_results)
+            assert(isinstance(new_results,dict))
+            df=df.append(new_results, ignore_index=True)
             linestyles.append('-')
-            color.append('red')
+            colors.append('red')
 
-        fig = plt.figure(figsize=(16,12))
+        if ax is None:
+            fig, ax = plt.subplots(figsize=(16,12))
         linestyles = iter(linestyles)
         colors = iter(colors)
 
         for i in df.index:
-            plt.plot(df.loc[i]['rec'],
+            ax.plot(df.loc[i]['rec'],
                 df.loc[i]['prec'],
                 color = next(colors), linestyle=next(linestyles),
-                label = "{}, f1_score={:.3f}, auprc={:.3f}".format(i,result_table.loc[i]['f1_score'], result_table.loc[i]['auprc']))
+                label = "{}, f1_score={:.3f}, auprc={:.3f}".format(df.loc[i]['classifier'],df.loc[i]['f1_score'], df.loc[i]['auprc']), **kwargs)
 
-        plt.plot([0,1], [0.5,0.5], color='black', linestyle='--')
-        plt.xticks(np.arange(0.0, 1.1, step=0.1), fontsize=20)
-        plt.xlabel("Recall", fontsize=24)
-        plt.yticks(np.arange(0.4, 1.1, step=0.1), fontsize=20)
-        plt.ylabel("Precision", fontsize=24)
-        plt.title('Precision-Recall Curve Comparison', fontweight='bold', fontsize=28)
-        plt.legend(prop={'size':13}, loc='lower left', fontsize=18)
+        ax.plot([0,1], [0.5,0.5], color='black', linestyle='--')
+        ax.set_xticks(np.arange(0.0, 1.1, step=0.1))
+        ax.set_xlabel("Recall", fontsize=24)
+        ax.set_yticks(np.arange(0.4, 1.1, step=0.1))
+        ax.tick_params(axis='both', which='major', labelsize=20)
+        ax.set_ylabel("Precision", fontsize=24)
+        ax.set_title('Precision-Recall Curve Comparison', fontweight='bold', fontsize=28)
+        ax.legend(prop={'size':13}, loc='lower right')
+        plt.gcf().subplots_adjust(bottom=0.15)
+    
+        return fig, ax
 
-        return fig
+
+    def plot_parallel_coordinates(self, datasets=None, ax=None, benchmarked_results=None, **kwargs):
+
+        '''
+        A method that plots a parallel coordinate plot for the whole benchmark with or without the additional benchmarked method.
+        If no additional method is presented, the results are averaged to a mean.
+        performance of all of the methods is averag
+
+        Parameters
+        ----------
+        datasets : list(str)
+            The name of the data set to load from DIGEN.
+        new_result : dict
+            The result of evaluation of the given estimator on the dataset_name 
+            For further reference, see: evaluate 
+        '''
+
+        if ax is None:
+            fig, ax = plt.subplots(figsize=(25,12))
+
+
+        if datasets is None:
+            datasets=self.list_datasets()
+        if not isinstance(datasets, list):
+            datasets = [datasets]
+
+        # getting performance of all the classifiers, and limiting to the listed datasets
+        df=self.data.pivot('classifier', columns='dataset', values='auroc')[datasets]
+
+        # if no dataset is added, just subtract mean performance for all datasets
+        if benchmarked_results is None:
+            df=df-df.mean()
+        #otherwise, use  provided results as a reference
+        else:
+            df=df-pd.Series(benchmarked_results)
+
+        #columns - classifiers, rows-datasets
+        df=df.transpose()
+        df['legend']=df.index
+        ax=pd.plotting.parallel_coordinates(df, 'legend', #color_continuous_scale=px.colors.sequential.Blues,
+                                     #color=["lime", "tomato","dodgerblue"],
+                                     alpha=0.2)
+
+        if benchmarked_results is None:
+            plt.title("Performance of classifiers compared to mean AUROC on DIGEN benchmark")
+            plt.ylabel('Difference vs mean AUROC value')
+#            plt.title("Performance of classifiers compared to mean AUROC on DIGEN benchmark", fontsize=28)
+#            plt.ylabel('Difference vs mean AUROC value', fontsize=24)
+
+        else:
+            plt.title("Performance of classifiers compared vs the method on DIGEN benchmark", fontsize=28)
+            plt.ylabel('Difference in AUROC vs benchmark performance', fontsize=24)
+        plt.plot([0,7], [0,0], color='red', linestyle='--')
+        ax.get_legend().remove()
+        ax.spines['top'].set_visible(False)
+        ax.spines['bottom'].set_visible(False)
+        ax.grid(False)
+        plt.xlabel('Classifiers')
+        plt.xticks(rotation=90)
+#        plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5))
+#        ax.set_facecolor("white")
+#        plt.gcf().subplots_adjust(bottom=0.15)
+
+        return fig, ax
+
+
+
+    def plot_heatmap(self, datasets=None, ax=None, benchmarked_results=None, **kwargs):
+
+        '''
+        A method that plots a parallel coordinate plot for the whole benchmark with or without the additional benchmarked method.
+        If no additional method is presented, the results are averaged to a mean.
+        performance of all of the methods is averag
+
+        Parameters
+        ----------
+        dataset_list : list(str)
+            The name of the data set to load from DIGEN.
+        new_result : dict
+            The result of evaluation of the given estimator on the dataset_name 
+            For further reference, see: evaluate 
+        '''
+
+#        if ax is None:
+#            fig, ax = plt.subplots()
+
+
+        if datasets is None:
+            datasets=self.list_datasets()
+        if not isinstance(datasets, list):
+            datasets = [datasets]
+        # getting performance of all the classifiers, and limiting to the listed datasets
+        df=self.data.pivot('classifier', columns='dataset', values='auroc')[datasets]
+        if benchmarked_results is not None:
+            df=df.append(pd.Series(benchmarked_results))
+        df=df.transpose()
+        g=sns.clustermap(df, cmap='Blues',  yticklabels=True, row_cluster=False)
+
+#        plt.title("Similiarity of AUROCs scores of ML classifiers across different DIGEN problems") #fontsize=28
+#        plt.xticks(fontsize=20, rotation=90)
+#        plt.xticks(rotation=90)
+
+#
+#
+#        plt.ylabel('Area under ROC curve') #fontsize=24
+##        col=ax.cax.get_position()
+#        ax.cax.set_position([col.x0+1, col.y0-0.35, col.width, col.height])
+#        plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5))
+#        ax.set_facecolor("white")
+#        plt.gcf().subplots_adjust(bottom=0.15)
+
+
+        g.fig.set_figheight(16)
+        g.fig.set_figwidth(12)
+        col=g.cax.get_position()
+        g.cax.set_position([col.x0+1, col.y0-0.35, col.width, col.height])
+
+        rcParams.update({'figure.autolayout': True})
+        return g, ax
+
+
+
+
 
 
 '''
@@ -419,12 +533,13 @@ digen.plot
 
 if __name__ == '__main__':
     benchmark = Benchmark()
-    dataset_name = 'F-GLXDKRS_0.175_0.861_5191'
-    best_model = benchmark.optimize(est, dataset_name)
-    benchmark.plot_auroc(best_model, dataset_name)
-    benchmark.plot_auprc(best_model, dataset_name)
+    benchmark.list_datasets()
+#    dataset_name = 'F-GLXDKRS_0.175_0.861_5191'
+#    best_model = benchmark.optimize(est, dataset_name)
+#    benchmark.plot_auroc(best_model, dataset_name)
+#    benchmark.plot_auprc(best_model, dataset_name)
 
-    est = XGBClassifier()
-    optimize(est,'L-XG-FDSKR_0.188_0.875_7270')
+#    est = XGBClassifier()
+#    optimize(est,'L-XG-FDSKR_0.188_0.875_7270')
 
 
