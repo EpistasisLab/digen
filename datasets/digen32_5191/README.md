@@ -2,9 +2,9 @@
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
-|  0 | GradientBoostingClassifier | 0.983   | 0.985707 |   0.985075 |            2 |            2 |         1 |
+|  0 | GradientBoostingClassifier | 0.9835  | 0.984645 |   0.943005 |            2 |            2 |         2 |
 |  1 | LGBMClassifier             | 0.9721  | 0.967543 |   0.926108 |            3 |            3 |         3 |
-|  2 | XGBClassifier              | 0.9914  | 0.990527 |   0.965517 |            1 |            1 |         2 |
+|  2 | XGBClassifier              | 0.9914  | 0.990527 |   0.965517 |            1 |            1 |         1 |
 |  3 | DecisionTreeClassifier     | 0.4996  | 0.480984 |   0.502513 |            7 |            8 |         7 |
 |  4 | LogisticRegression         | 0.5     | 0.75     |   0        |            7 |            6 |         8 |
 |  5 | KNeighborsClassifier       | 0.6412  | 0.649505 |   0.562814 |            6 |            7 |         6 |
@@ -17,9 +17,10 @@
 
 
 ```
-GradientBoostingClassifier(learning_rate=0.7403111366779398, loss='exponential',
-                           max_depth=8, n_iter_no_change=15, random_state=5191,
-                           tol=1e-07, validation_fraction=0.01)
+GradientBoostingClassifier(learning_rate=0.6659353990146355, loss='exponential',
+                           max_depth=8, min_samples_leaf=14,
+                           n_iter_no_change=18, random_state=5191, tol=1e-07,
+                           validation_fraction=0.01)
 LGBMClassifier(deterministic=True, force_row_wise=True, max_depth=10,
                metric='binary_logloss', n_estimators=98, n_jobs=1,
                num_leaves=1024, objective='binary', random_state=5191)

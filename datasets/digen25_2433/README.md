@@ -1,10 +1,10 @@
-# Dataset: digen25_2433 (XLGFSKDR_0.176_0.821_2433)
+# Dataset: digen25_2433 (X-GLFSKDR_0.179_0.824_2433)
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
-|  0 | GradientBoostingClassifier | 0.977   | 0.975876 |   0.93     |            3 |            3 |         3 |
-|  1 | LGBMClassifier             | 0.985   | 0.987424 |   0.959596 |            2 |            2 |         2 |
-|  2 | XGBClassifier              | 1       | 1        |   0.994975 |            1 |            1 |         1 |
+|  0 | GradientBoostingClassifier | 1       | 1        |   1        |            1 |            1 |         1 |
+|  1 | LGBMClassifier             | 0.985   | 0.987424 |   0.959596 |            3 |            3 |         3 |
+|  2 | XGBClassifier              | 1       | 1        |   0.994975 |            1 |            1 |         2 |
 |  3 | DecisionTreeClassifier     | 0.68705 | 0.702358 |   0.6      |            7 |            6 |         7 |
 |  4 | LogisticRegression         | 0.4744  | 0.484929 |   0.466321 |            8 |            8 |         8 |
 |  5 | KNeighborsClassifier       | 0.6933  | 0.672655 |   0.642105 |            6 |            7 |         6 |
@@ -17,10 +17,10 @@
 
 
 ```
-GradientBoostingClassifier(learning_rate=0.5490589545705974, loss='exponential',
-                           max_depth=10, min_samples_leaf=54,
-                           n_iter_no_change=15, random_state=2433, tol=1e-07,
-                           validation_fraction=0.01)
+GradientBoostingClassifier(learning_rate=0.5996494410400954, loss='exponential',
+                           max_depth=10, min_samples_leaf=70,
+                           n_iter_no_change=16, random_state=2433, tol=1e-07,
+                           validation_fraction=0.03)
 LGBMClassifier(deterministic=True, force_row_wise=True, max_depth=9,
                metric='binary_logloss', n_jobs=1, num_leaves=512,
                objective='binary', random_state=2433)

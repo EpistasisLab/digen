@@ -1,11 +1,11 @@
-# Dataset: digen9_7270 (FGXLDSKR_0.129_0.847_7270)
+# Dataset: digen9_7270 (FXGLDSKR_0.128_0.846_7270)
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
-|  0 | GradientBoostingClassifier | 0.9471  | 0.950705 |   0.881188 |            2 |            3 |         2 |
-|  1 | LGBMClassifier             | 0.931   | 0.941125 |   0.843137 |            4 |            4 |         5 |
-|  2 | XGBClassifier              | 0.9459  | 0.95207  |   0.864078 |            3 |            2 |         4 |
-|  3 | DecisionTreeClassifier     | 0.9082  | 0.925133 |   0.876847 |            5 |            5 |         3 |
+|  0 | GradientBoostingClassifier | 0.9392  | 0.929449 |   0.875622 |            3 |            4 |         3 |
+|  1 | LGBMClassifier             | 0.931   | 0.941125 |   0.843137 |            4 |            3 |         5 |
+|  2 | XGBClassifier              | 0.9459  | 0.95207  |   0.864078 |            2 |            2 |         4 |
+|  3 | DecisionTreeClassifier     | 0.9082  | 0.925133 |   0.876847 |            5 |            5 |         2 |
 |  4 | LogisticRegression         | 0.5782  | 0.550618 |   0.585859 |            8 |            8 |         8 |
 |  5 | KNeighborsClassifier       | 0.7407  | 0.749744 |   0.666667 |            7 |            6 |         7 |
 |  6 | RandomForestClassifier     | 0.9553  | 0.956345 |   0.888889 |            1 |            1 |         1 |
@@ -17,9 +17,9 @@
 
 
 ```
-GradientBoostingClassifier(learning_rate=0.16375287436614608,
-                           loss='exponential', max_depth=8, min_samples_leaf=4,
-                           n_iter_no_change=2, random_state=7270, tol=1e-07,
+GradientBoostingClassifier(learning_rate=0.1610451758778961, max_depth=8,
+                           min_samples_leaf=3, n_iter_no_change=3,
+                           random_state=7270, tol=1e-07,
                            validation_fraction=0.03)
 LGBMClassifier(boosting_type='dart', deterministic=True, force_row_wise=True,
                max_depth=7, metric='binary_logloss', n_estimators=56, n_jobs=1,

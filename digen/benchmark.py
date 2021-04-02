@@ -207,6 +207,9 @@ class Benchmark:
         '''
         dataset = Dataset(dataset_name)
         random_state = dataset.get_random_state(dataset_name)
+        random.seed(random_state)
+        np.random.seed(random_state)
+
 
 
         X, y = dataset.load_dataset(separate_target=True, local_cache_dir=local_cache_dir)
@@ -291,7 +294,10 @@ class Benchmark:
         new_result : dict
             The result of evaluation of the given estimator on the dataset_name 
             For further reference, see: evaluate 
-
+        ax : matplotlib.axes.Axes.axis
+            access to axis of the figure
+        kwargs : dict
+            additional arguments
         '''
 
         df=self.data[self.data['dataset'] == dataset_name]

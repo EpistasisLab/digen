@@ -1,10 +1,10 @@
-# Dataset: digen6_466 (LGXFDSKR_0.168_0.846_466)
+# Dataset: digen6_466 (LXGFDSKR_0.163_0.84_466)
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
-|  0 | GradientBoostingClassifier |  0.995  | 0.996328 |   0.985075 |            2 |            2 |         1 |
-|  1 | LGBMClassifier             |  0.997  | 0.996907 |   0.980198 |            1 |            1 |         2 |
-|  2 | XGBClassifier              |  0.9846 | 0.984296 |   0.954774 |            3 |            3 |         3 |
+|  0 | GradientBoostingClassifier |  0.9442 | 0.943413 |   0.871795 |            3 |            3 |         3 |
+|  1 | LGBMClassifier             |  0.997  | 0.996907 |   0.980198 |            1 |            1 |         1 |
+|  2 | XGBClassifier              |  0.9846 | 0.984296 |   0.954774 |            2 |            2 |         2 |
 |  3 | DecisionTreeClassifier     |  0.8711 | 0.882612 |   0.756757 |            5 |            5 |         6 |
 |  4 | LogisticRegression         |  0.4991 | 0.508148 |   0.455959 |            8 |            8 |         8 |
 |  5 | KNeighborsClassifier       |  0.6555 | 0.650222 |   0.61     |            7 |            7 |         7 |
@@ -17,10 +17,9 @@
 
 
 ```
-GradientBoostingClassifier(learning_rate=0.5609931119493801, loss='exponential',
-                           max_depth=9, min_samples_leaf=56,
-                           n_iter_no_change=20, random_state=466, tol=1e-07,
-                           validation_fraction=0.04)
+GradientBoostingClassifier(learning_rate=0.8646915585885857, loss='exponential',
+                           max_depth=9, n_iter_no_change=18, random_state=466,
+                           tol=1e-07, validation_fraction=0.02)
 LGBMClassifier(deterministic=True, force_row_wise=True, max_depth=8,
                metric='binary_logloss', n_estimators=90, n_jobs=1,
                num_leaves=256, objective='binary', random_state=466)
