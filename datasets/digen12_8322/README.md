@@ -1,4 +1,9 @@
-# Dataset: digen12_8322 (XGLFDSKR_0.173_0.831_8322)
+# Dataset: digen12
+**Random seed: 8322**<br/>
+Order of the methods: XGLFDSKR<br/>
+Mean performance: 0.831<br/>
+Standard deviation: 0.173<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        | 0.7371  | 0.735088 |   0.659898 |            6 |            7 |         6 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 8322)</summary>
 
 
 ```
@@ -50,7 +56,7 @@ SVC(C=0.48750778505294934, class_weight='balanced', coef0=9.600000000000001,
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen12_8322-box.svg' width=40% />
 </details>
 

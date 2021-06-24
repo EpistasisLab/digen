@@ -1,4 +1,9 @@
-# Dataset: digen2_6949 (XGLFSKDR_0.201_0.78_6949)
+# Dataset: digen2
+**Random seed: 6949**<br/>
+Order of the methods: XGLFSKDR<br/>
+Mean performance: 0.78<br/>
+Standard deviation: 0.201<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        | 0.7965  | 0.782447 |   0.731707 |            5 |            5 |         5 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 6949)</summary>
 
 
 ```
@@ -47,7 +53,7 @@ SVC(C=37.06732818290728, coef0=6.6000000000000005, kernel='poly',
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen2_6949-box.svg' width=40% />
 </details>
 

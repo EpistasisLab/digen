@@ -1,4 +1,9 @@
-# Dataset: digen10_8322 (SXLFGKDR_0.156_0.799_8322)
+# Dataset: digen10
+**Random seed: 8322**<br/>
+Order of the methods: SXLFGKDR<br/>
+Mean performance: 0.799<br/>
+Standard deviation: 0.156<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        |  0.9773 | 0.978749 |   0.945274 |            1 |            1 |         1 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 8322)</summary>
 
 
 ```
@@ -50,7 +56,7 @@ SVC(C=92.51616172779029, class_weight='balanced', coef0=5.9, degree=2,
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen10_8322-box.svg' width=40% />
 </details>
 

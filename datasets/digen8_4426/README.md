@@ -1,4 +1,9 @@
-# Dataset: digen8_4426 (XGLSFKDR_0.196_0.753_4426)
+# Dataset: digen8
+**Random seed: 4426**<br/>
+Order of the methods: XGLSFKDR<br/>
+Mean performance: 0.753<br/>
+Standard deviation: 0.196<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        |  0.8249 | 0.851723 |   0.759615 |            4 |            4 |         4 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 4426)</summary>
 
 
 ```
@@ -49,7 +55,7 @@ SVC(C=107.60551985222125, class_weight='balanced', gamma='auto', kernel='poly',
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen8_4426-box.svg' width=40% />
 </details>
 

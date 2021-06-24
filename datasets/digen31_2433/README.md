@@ -1,4 +1,9 @@
-# Dataset: digen31_2433 (SXFLGKDR_0.173_0.785_2433)
+# Dataset: digen31
+**Random seed: 2433**<br/>
+Order of the methods: SXFLGKDR<br/>
+Mean performance: 0.785<br/>
+Standard deviation: 0.173<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        | 0.9496  | 0.950785 |   0.885572 |            1 |            1 |         1 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 2433)</summary>
 
 
 ```
@@ -52,7 +58,7 @@ SVC(C=1.0244693156215607, class_weight='balanced', coef0=9.700000000000001,
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen31_2433-box.svg' width=40% />
 </details>
 

@@ -1,4 +1,9 @@
-# Dataset: digen21_6265 (FLGDXKSR_0.157_0.867_6265)
+# Dataset: digen21
+**Random seed: 6265**<br/>
+Order of the methods: FLGDXKSR<br/>
+Mean performance: 0.867<br/>
+Standard deviation: 0.157<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        | 0.7072  | 0.70927  |   0.660099 |            7 |            7 |         6 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 6265)</summary>
 
 
 ```
@@ -48,7 +54,7 @@ SVC(C=83.92431666168372, coef0=3.1, degree=4, gamma='auto', probability=True,
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen21_6265-box.svg' width=40% />
 </details>
 

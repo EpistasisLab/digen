@@ -1,4 +1,9 @@
-# Dataset: digen28_769 (XGLSFKRD_0.198_0.759_769)
+# Dataset: digen28
+**Random seed: 769**<br/>
+Order of the methods: XGLSFKRD<br/>
+Mean performance: 0.759<br/>
+Standard deviation: 0.198<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        | 0.8835  | 0.900567 |   0.789744 |            4 |            4 |         4 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 769)</summary>
 
 
 ```
@@ -49,7 +55,7 @@ SVC(C=3495.2924397334027, class_weight='balanced', kernel='poly',
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen28_769-box.svg' width=40% />
 </details>
 

@@ -1,4 +1,9 @@
-# Dataset: digen37_769 (SFXLGDKR_0.141_0.846_769)
+# Dataset: digen37
+**Random seed: 769**<br/>
+Order of the methods: SFXLGDKR<br/>
+Mean performance: 0.846<br/>
+Standard deviation: 0.141<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        |  0.993  | 0.99225  |   0.97     |            1 |            1 |         1 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 769)</summary>
 
 
 ```
@@ -48,7 +54,7 @@ SVC(C=72333.2860651946, degree=2, gamma='auto', kernel='poly', probability=True,
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen37_769-box.svg' width=40% />
 </details>
 

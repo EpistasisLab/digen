@@ -1,4 +1,9 @@
-# Dataset: digen26_7270 (FXGLDSKR_0.191_0.846_7270)
+# Dataset: digen26
+**Random seed: 7270**<br/>
+Order of the methods: FXGLDSKR<br/>
+Mean performance: 0.846<br/>
+Standard deviation: 0.191<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        | 0.84245 | 0.856586 |   0.757576 |            6 |            6 |         6 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 7270)</summary>
 
 
 ```
@@ -49,7 +55,7 @@ SVC(C=55753.94600888312, class_weight='balanced', coef0=6.2, gamma='auto',
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen26_7270-box.svg' width=40% />
 </details>
 

@@ -1,4 +1,9 @@
-# Dataset: digen3_769 (RSKG-XLFD_0.036_0.958_769)
+# Dataset: digen3
+**Random seed: 769**<br/>
+Order of the methods: RSKG-XLFD<br/>
+Mean performance: 0.958<br/>
+Standard deviation: 0.036<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        | 0.9817  | 0.988183 |   0.96     |            2 |            2 |         2 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 769)</summary>
 
 
 ```
@@ -50,7 +56,7 @@ SVC(C=37597.16038511512, class_weight='balanced', degree=5, kernel='linear',
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen3_769-box.svg' width=40% />
 </details>
 

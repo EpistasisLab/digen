@@ -1,4 +1,9 @@
-# Dataset: digen13_769 (SGXFLKDR_0.111_0.826_769)
+# Dataset: digen13
+**Random seed: 769**<br/>
+Order of the methods: SGXFLKDR<br/>
+Mean performance: 0.826<br/>
+Standard deviation: 0.111<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        | 0.93185 | 0.919262 |   0.868293 |            1 |            1 |         1 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 769)</summary>
 
 
 ```
@@ -48,7 +54,7 @@ SVC(C=99227.20183788003, coef0=3.5, degree=2, gamma='auto', kernel='poly',
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen13_769-box.svg' width=40% />
 </details>
 

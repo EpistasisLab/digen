@@ -1,4 +1,9 @@
-# Dataset: digen20_5191 (G-FLXDSKR_0.144_0.892_5191)
+# Dataset: digen20
+**Random seed: 5191**<br/>
+Order of the methods: G-FLXDSKR<br/>
+Mean performance: 0.892<br/>
+Standard deviation: 0.144<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        | 0.8298  | 0.846233 |   0.769231 |            6 |            6 |         6 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 5191)</summary>
 
 
 ```
@@ -48,7 +54,7 @@ SVC(C=865.2698339697611, coef0=6.5, gamma='auto', kernel='poly',
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen20_5191-box.svg' width=40% />
 </details>
 

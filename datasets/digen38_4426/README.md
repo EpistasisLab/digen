@@ -1,4 +1,9 @@
-# Dataset: digen38_4426 (GXSLFKDR_0.183_0.763_4426)
+# Dataset: digen38
+**Random seed: 4426**<br/>
+Order of the methods: GXSLFKDR<br/>
+Mean performance: 0.763<br/>
+Standard deviation: 0.183<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        |  0.8529 | 0.878393 |   0.752577 |            3 |            3 |         4 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 4426)</summary>
 
 
 ```
@@ -48,7 +54,7 @@ SVC(C=4873.703354641575, class_weight='balanced', kernel='poly',
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen38_4426-box.svg' width=40% />
 </details>
 

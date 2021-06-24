@@ -1,4 +1,9 @@
-# Dataset: digen1_6265 (RSXG-KLFD_0.024_0.976_6265)
+# Dataset: digen1
+**Random seed: 6265**<br/>
+Order of the methods: RSXG-KLFD<br/>
+Mean performance: 0.976<br/>
+Standard deviation: 0.024<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        | 0.9943  | 0.994575 |   0.95     |            2 |            2 |         2 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 6265)</summary>
 
 
 ```
@@ -50,7 +56,7 @@ SVC(C=8500.923846513155, class_weight='balanced', coef0=7.2, degree=2,
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen1_6265-box.svg' width=40% />
 </details>
 

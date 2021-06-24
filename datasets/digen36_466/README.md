@@ -1,4 +1,9 @@
-# Dataset: digen36_466 (SXFL-KGDR_0.134_0.746_466)
+# Dataset: digen36
+**Random seed: 466**<br/>
+Order of the methods: SXFL-KGDR<br/>
+Mean performance: 0.746<br/>
+Standard deviation: 0.134<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        | 0.9519  | 0.957077 |   0.884422 |            1 |            1 |         1 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 466)</summary>
 
 
 ```
@@ -52,7 +58,7 @@ SVC(C=28003.590453299326, class_weight='balanced', coef0=5.7, degree=2,
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen36_466-box.svg' width=40% />
 </details>
 

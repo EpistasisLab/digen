@@ -1,4 +1,9 @@
-# Dataset: digen23_5191 (XLGSFKRD_0.197_0.747_5191)
+# Dataset: digen23
+**Random seed: 5191**<br/>
+Order of the methods: XLGSFKRD<br/>
+Mean performance: 0.747<br/>
+Standard deviation: 0.197<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        | 0.7578  | 0.785718 |   0.669903 |            4 |            4 |         4 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 5191)</summary>
 
 
 ```
@@ -50,7 +56,7 @@ SVC(C=800.4847130280158, class_weight='balanced', coef0=7.800000000000001,
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen23_5191-box.svg' width=40% />
 </details>
 

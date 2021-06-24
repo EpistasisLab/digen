@@ -1,4 +1,9 @@
-# Dataset: digen5_6949 (F-GLDXKSR_0.085_0.897_6949)
+# Dataset: digen5
+**Random seed: 6949**<br/>
+Order of the methods: F-GLDXKSR<br/>
+Mean performance: 0.897<br/>
+Standard deviation: 0.085<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        | 0.8385  | 0.831106 |   0.753623 |            7 |            7 |         7 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 6949)</summary>
 
 
 ```
@@ -51,7 +57,7 @@ SVC(C=3.7501379414988123, class_weight='balanced', coef0=1.9000000000000001,
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen5_6949-box.svg' width=40% />
 </details>
 

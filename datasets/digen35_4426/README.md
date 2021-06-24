@@ -1,4 +1,9 @@
-# Dataset: digen35_4426 (GXLSFKDR_0.187_0.756_4426)
+# Dataset: digen35
+**Random seed: 4426**<br/>
+Order of the methods: GXLSFKDR<br/>
+Mean performance: 0.756<br/>
+Standard deviation: 0.187<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        | 0.8046  | 0.816585 |   0.712871 |            4 |            4 |         4 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 4426)</summary>
 
 
 ```
@@ -49,7 +55,7 @@ SVC(C=317.6179888507738, coef0=9.0, kernel='poly', probability=True,
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen35_4426-box.svg' width=40% />
 </details>
 

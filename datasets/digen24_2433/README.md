@@ -1,4 +1,9 @@
-# Dataset: digen24_2433 (XGLFSKRD_0.201_0.789_2433)
+# Dataset: digen24
+**Random seed: 2433**<br/>
+Order of the methods: XGLFSKRD<br/>
+Mean performance: 0.789<br/>
+Standard deviation: 0.201<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        | 0.7797  | 0.779841 |   0.677083 |            5 |            5 |         5 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 2433)</summary>
 
 
 ```
@@ -48,7 +54,7 @@ SVC(C=9.806807339798775, coef0=9.8, degree=4, gamma='auto', kernel='poly',
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen24_2433-box.svg' width=40% />
 </details>
 

@@ -1,4 +1,9 @@
-# Dataset: digen39_5578 (SXLGFKDR_0.127_0.889_5578)
+# Dataset: digen39
+**Random seed: 5578**<br/>
+Order of the methods: SXLGFKDR<br/>
+Mean performance: 0.889<br/>
+Standard deviation: 0.127<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        |  0.9894 | 0.992443 |   0.959596 |            1 |            1 |         1 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 5578)</summary>
 
 
 ```
@@ -51,7 +57,7 @@ SVC(C=102.95458343932938, class_weight='balanced', coef0=9.3, degree=2,
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen39_5578-box.svg' width=40% />
 </details>
 

@@ -1,4 +1,9 @@
-# Dataset: digen6_466 (LXGFDSKR_0.163_0.84_466)
+# Dataset: digen6
+**Random seed: 466**<br/>
+Order of the methods: LXGFDSKR<br/>
+Mean performance: 0.84<br/>
+Standard deviation: 0.163<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        |  0.859  | 0.850773 |   0.765306 |            6 |            6 |         5 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 466)</summary>
 
 
 ```
@@ -49,7 +55,7 @@ SVC(C=346.9531614272966, coef0=3.9000000000000004, kernel='poly',
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen6_466-box.svg' width=40% />
 </details>
 

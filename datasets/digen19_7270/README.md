@@ -1,4 +1,9 @@
-# Dataset: digen19_7270 (SXLGFKDR_0.169_0.819_7270)
+# Dataset: digen19
+**Random seed: 7270**<br/>
+Order of the methods: SXLGFKDR<br/>
+Mean performance: 0.819<br/>
+Standard deviation: 0.169<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        |  0.9923 | 0.993107 |   0.943005 |            1 |            1 |         1 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 7270)</summary>
 
 
 ```
@@ -49,7 +55,7 @@ SVC(C=348.3667826204569, class_weight='balanced', coef0=4.4, degree=2,
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen19_7270-box.svg' width=40% />
 </details>
 

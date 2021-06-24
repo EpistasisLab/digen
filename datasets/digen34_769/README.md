@@ -1,4 +1,9 @@
-# Dataset: digen34_769 (GXSFLKDR_0.181_0.73_769)
+# Dataset: digen34
+**Random seed: 769**<br/>
+Order of the methods: GXSFLKDR<br/>
+Mean performance: 0.73<br/>
+Standard deviation: 0.181<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        |  0.8103 | 0.818559 |   0.732673 |            3 |            3 |         3 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 769)</summary>
 
 
 ```
@@ -50,7 +56,7 @@ SVC(C=187.49058959610034, class_weight='balanced', coef0=9.3, kernel='poly',
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen34_769-box.svg' width=40% />
 </details>
 

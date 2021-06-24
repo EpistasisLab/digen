@@ -1,4 +1,9 @@
-# Dataset: digen27_860 (X-FGDLSKR_0.189_0.818_860)
+# Dataset: digen27
+**Random seed: 860**<br/>
+Order of the methods: X-FGDLSKR<br/>
+Mean performance: 0.818<br/>
+Standard deviation: 0.189<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        | 0.6394  | 0.61871  |   0.594059 |            6 |            6 |         6 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 860)</summary>
 
 
 ```
@@ -48,7 +54,7 @@ SVC(C=16.289481170105468, class_weight='balanced', coef0=8.3, probability=True,
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen27_860-box.svg' width=40% />
 </details>
 

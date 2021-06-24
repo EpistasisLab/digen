@@ -1,4 +1,9 @@
-# Dataset: digen14_769 (XGSLFKRD_0.185_0.734_769)
+# Dataset: digen14
+**Random seed: 769**<br/>
+Order of the methods: XGSLFKRD<br/>
+Mean performance: 0.734<br/>
+Standard deviation: 0.185<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        |  0.8663 | 0.860559 |   0.762376 |            3 |            3 |         3 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 769)</summary>
 
 
 ```
@@ -48,7 +54,7 @@ SVC(C=1951.087099951524, class_weight='balanced', kernel='poly',
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen14_769-box.svg' width=40% />
 </details>
 

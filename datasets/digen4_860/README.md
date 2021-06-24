@@ -1,4 +1,9 @@
-# Dataset: digen4_860 (XLSFKGDR_0.188_0.729_860)
+# Dataset: digen4
+**Random seed: 860**<br/>
+Order of the methods: XLSFKGDR<br/>
+Mean performance: 0.729<br/>
+Standard deviation: 0.188<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        |  0.8504 | 0.854726 |   0.761421 |            3 |            3 |         3 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 860)</summary>
 
 
 ```
@@ -49,7 +55,7 @@ SVC(C=48.74266137429492, gamma='auto', kernel='poly', probability=True,
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen4_860-box.svg' width=40% />
 </details>
 

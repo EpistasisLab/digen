@@ -1,4 +1,9 @@
-# Dataset: digen16_5390 (SGLXFKDR_0.167_0.805_5390)
+# Dataset: digen16
+**Random seed: 5390**<br/>
+Order of the methods: SGLXFKDR<br/>
+Mean performance: 0.805<br/>
+Standard deviation: 0.167<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        | 0.97655 | 0.966264 |   0.926829 |            1 |            1 |         1 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 5390)</summary>
 
 
 ```
@@ -49,7 +55,7 @@ SVC(C=40058.39674867982, coef0=9.0, degree=2, kernel='poly', probability=True,
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen16_5390-box.svg' width=40% />
 </details>
 

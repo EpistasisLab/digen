@@ -1,4 +1,9 @@
-# Dataset: digen22_2433 (F-XGLSKDR_0.168_0.868_2433)
+# Dataset: digen22
+**Random seed: 2433**<br/>
+Order of the methods: F-XGLSKDR<br/>
+Mean performance: 0.868<br/>
+Standard deviation: 0.168<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        |  0.9653 | 0.965424 |   0.905473 |            5 |            5 |         5 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 2433)</summary>
 
 
 ```
@@ -50,7 +56,7 @@ SVC(C=146.56767100206685, class_weight='balanced', coef0=9.8, degree=2,
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen22_2433-box.svg' width=40% />
 </details>
 

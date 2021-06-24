@@ -1,4 +1,9 @@
-# Dataset: digen29_8322 (XLFGDKSR_0.079_0.734_8322)
+# Dataset: digen29
+**Random seed: 8322**<br/>
+Order of the methods: XLFGDKSR<br/>
+Mean performance: 0.734<br/>
+Standard deviation: 0.079<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        | 0.6482  | 0.625415 |   0.592965 |            7 |            6 |         6 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 8322)</summary>
 
 
 ```
@@ -49,7 +55,7 @@ SVC(C=1.096309995361921, coef0=1.8, gamma='auto', kernel='poly',
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen29_8322-box.svg' width=40% />
 </details>
 

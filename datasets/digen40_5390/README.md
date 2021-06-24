@@ -1,4 +1,9 @@
-# Dataset: digen40_5390 (XLGFSRDK_0.187_0.734_5390)
+# Dataset: digen40
+**Random seed: 5390**<br/>
+Order of the methods: XLGFSRDK<br/>
+Mean performance: 0.734<br/>
+Standard deviation: 0.187<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        | 0.5821  | 0.611449 |   0.580645 |            5 |            6 |         5 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 5390)</summary>
 
 
 ```
@@ -48,7 +54,7 @@ SVC(C=7314.432828693774, class_weight='balanced', coef0=3.4000000000000004,
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen40_5390-box.svg' width=40% />
 </details>
 

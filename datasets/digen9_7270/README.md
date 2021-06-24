@@ -1,4 +1,9 @@
-# Dataset: digen9_7270 (FXGLDSKR_0.128_0.846_7270)
+# Dataset: digen9
+**Random seed: 7270**<br/>
+Order of the methods: FXGLDSKR<br/>
+Mean performance: 0.846<br/>
+Standard deviation: 0.128<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        | 0.76785 | 0.724086 |   0.731707 |            6 |            7 |         6 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 7270)</summary>
 
 
 ```
@@ -50,7 +56,7 @@ SVC(C=1.5102802071652903, coef0=1.0, degree=4, gamma='auto', kernel='poly',
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen9_7270-box.svg' width=40% />
 </details>
 

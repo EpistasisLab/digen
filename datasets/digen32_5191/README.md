@@ -1,4 +1,9 @@
-# Dataset: digen32_5191 (XGLFSKR-D_0.196_0.777_5191)
+# Dataset: digen32
+**Random seed: 5191**<br/>
+Order of the methods: XGLFSKR-D<br/>
+Mean performance: 0.777<br/>
+Standard deviation: 0.196<br/>
+
 
 |    | classifier                 |   auroc |    auprc |   f1_score |   rank_auroc |   rank_auprc |   rank_f1 |
 |---:|:---------------------------|--------:|---------:|-----------:|-------------:|-------------:|----------:|
@@ -12,8 +17,9 @@
 |  7 | SVC                        | 0.76165 | 0.780062 |   0.680412 |            5 |            5 |         5 |
 
 
+
 <details>
-<summary>Parameters of tuned ML methods (200 optimizations)</summary>
+<summary>Parameters of tuned ML methods (based on 200 optimizations started from seed 5191)</summary>
 
 
 ```
@@ -49,7 +55,7 @@ SVC(C=11.452632602988592, coef0=9.0, degree=5, probability=True,
 </details>
 
 <details>
-<summary>Expected performance (100 optimizations starting from different random seed)</summary>
+<summary>Expected performance (based on 100 runs, each with 100 optimizations started from a different random seed)</summary>
 <img src='digen32_5191-box.svg' width=40% />
 </details>
 
