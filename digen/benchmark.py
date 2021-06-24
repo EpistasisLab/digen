@@ -25,6 +25,8 @@ GITHUB_URL = 'https://github.com/EpistasisLab/digen/tree/main/datasets'
 suffix = '.tsv'
 
 
+__version__='0.0.1'
+
 import os
 #import pkgutil
 
@@ -36,6 +38,7 @@ import matplotlib.pyplot as plt
 import optuna
 import pickle
 import random
+import copy
 
 
 from sklearn.metrics import roc_auc_score
@@ -47,7 +50,7 @@ from xgboost import XGBClassifier
 from matplotlib import rcParams
 rcParams.update({'figure.autolayout': True})
 
-from . import initialize
+from . import initialize, load_datasets
 from .dataset import Dataset
 
 
@@ -90,7 +93,21 @@ class Benchmark:
         self.timeout = timeout
         self.n_splits = n_splits
 
+        df=pd.read_csv(StringIO(load_datasets()), sep=',', index_col='dataset')
+        self.models=df[['indiv']].to_dict()['indiv']
+        self.hashes=df[['hash']].to_dict()['hash']
 
+    def list_methods(self):
+        '''
+        This method lists all the methods included in the benchmark.
+
+        Returns
+        --------
+        methods : a list of strings
+            List of the methods included in DIGEN.
+        '''
+
+        return list(sorted(self.data['classifier'].unique()))
 
     def list_datasets(self):
         '''
@@ -102,6 +119,18 @@ class Benchmark:
             List of all names of the datasets included in DIGEN.
         '''
         return self.dataset_names
+
+
+    def get_models(self):
+        '''
+        This method lists all models
+
+        Returns
+        --------
+        dataset_names : dict
+            List of all models of the datasets included in DIGEN.
+        '''
+        return self.models
 
 
 
@@ -129,6 +158,10 @@ class Benchmark:
 
         dataset = Dataset(dataset_name)
         return dataset.load_dataset(separate_target=separate_target, local_cache_dir=local_cache_dir)
+
+
+
+
 
 
 
@@ -185,15 +218,15 @@ class Benchmark:
             X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=0.2, random_state=random_state)
 
             study.optimize(lambda trial: self._objective(trial, X_train, y_train, est, parameter_scopes, random_state), n_trials=self.n_trials, timeout=self.timeout)
-            best_models[dataset_name] = clone(est).set_params(**study.best_trial.user_attrs['params'])
+###            best_models[dataset_name] = clone(est).set_params(**study.best_trial.user_attrs['params'])
+            best_models[dataset_name] = self.evaluate( clone(est).set_params(**study.best_trial.user_attrs['params']), dataset_name, local_cache_dir)[dataset_name]
 #            best_models[dataset_name] = clone(est.__class__(**study.best_trial.user_attrs['params']))
 #            print(str(best_models))
+#        return best_models
+        best_models['name']=est.__class__.__name__ 
         return best_models
 
-
-
-
-    def evaluate(self, est, dataset_name, local_cache_dir=None):
+    def evaluate(self, est, datasets=None, local_cache_dir=None):
         '''
         A method that calculates different performance metrics for the ML method with parameters.
         This function doesn't tune the parameters.
@@ -205,28 +238,35 @@ class Benchmark:
             A method that will be timized and benchmarked against DIGEN.
 
         '''
-        dataset = Dataset(dataset_name)
-        random_state = dataset.get_random_state(dataset_name)
-        random.seed(random_state)
-        np.random.seed(random_state)
 
 
+        if (datasets == None):
+            datasets = self.list_datasets()
+        if not isinstance(datasets, list):
+            datasets = [datasets]
+        results={}
+        for dataset_name in datasets:
+            dataset = Dataset(dataset_name)
+            random_state = dataset.get_random_state(dataset_name)
+            random.seed(random_state)
+            np.random.seed(random_state)
 
-        X, y = dataset.load_dataset(separate_target=True, local_cache_dir=local_cache_dir)
-        X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=0.2, random_state=random_state)	
 
-        est.fit(X_train, y_train)
-        yproba = est.predict_proba(X_test)[::,1]
-        y_pred = est.predict(X_test)
-        precision = precision_score(y_test, y_pred)
-        recall = recall_score(y_test, y_pred)
-        fpr, tpr, _ = roc_curve(y_test,  yproba)
-        auroc = roc_auc_score(y_test, yproba)
-        #average_precision_score(y_test,yproba)
-        prec,rec, _ = precision_recall_curve(y_test, yproba)
-        return {
+            X, y = dataset.load_dataset(separate_target=True, local_cache_dir=local_cache_dir)
+            X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=0.2, random_state=random_state)	
+
+            est.fit(X_train, y_train)
+            yproba = est.predict_proba(X_test)[::,1]
+            y_pred = est.predict(X_test)
+            precision = precision_score(y_test, y_pred)
+            recall = recall_score(y_test, y_pred)
+            fpr, tpr, _ = roc_curve(y_test,  yproba)
+            auroc = roc_auc_score(y_test, yproba)
+            #average_precision_score(y_test,yproba)
+            prec,rec, _ = precision_recall_curve(y_test, yproba)
+            results[dataset_name]={
                     'dataset' : dataset_name,
-                    'classifier' : est.__class__.__name__,
+                    'classifier' : est,
                     'fpr' : fpr,
                     'tpr' : tpr,
                     'prec' : prec,
@@ -235,6 +275,8 @@ class Benchmark:
                     'f1_score' : f1_score(y_test,y_pred),
                     'auprc' : auc(rec,prec)
                 }
+        results['name'] = est.__class__.__name__
+        return results
 
 
 
@@ -244,7 +286,6 @@ class Benchmark:
         An internal method that sets Optuna parameters and objective for hyper-parameter optimization
         '''
         est = clone(estimator).set_params(**parameter_scopes(trial))
-#        est = clone(estimator.__class__(**parameter_scopes(trial)))
 
         for a in ['random_state','seed']:
             if hasattr(est,a):
@@ -294,10 +335,7 @@ class Benchmark:
         new_result : dict
             The result of evaluation of the given estimator on the dataset_name 
             For further reference, see: evaluate 
-        ax : matplotlib.axes.Axes.axis
-            access to axis of the figure
-        kwargs : dict
-            additional arguments
+
         '''
 
         df=self.data[self.data['dataset'] == dataset_name]
@@ -313,16 +351,27 @@ class Benchmark:
 
         if new_results is not None:
             assert(isinstance(new_results, dict))
-            df=df.append(new_results, ignore_index=True)
+            new_results_tmp=copy.deepcopy(new_results)
+            new_results_tmp[dataset_name]['classifier']=new_results_tmp['name']
+            if isinstance(new_results_tmp[dataset_name], dict):
+                df=df.append(new_results_tmp[dataset_name], ignore_index=True)
+            else:
+                df=df.append(new_results_tmp, ignore_index=True)
             linestyles.append('-')
             colors.append('red')
-        linestyles = iter(linestyles)
-        colors = iter(colors)
-        for i in df.index:
-            ax.plot(df.loc[i]['fpr'],
-                df.loc[i]['tpr'],
-                color = next(colors), linestyle=next(linestyles),
-                label = "{}, AUC={:.3f}".format(df.loc[i]['classifier'], df.loc[i]['auroc']), **kwargs)
+
+            linestyles = iter(linestyles)
+            colors = iter(colors)
+            for i in df.index:
+                ax.plot(df.loc[i]['fpr'],
+                    df.loc[i]['tpr'],
+                    color = next(colors), linestyle=next(linestyles),
+                    label = "{}, AUC={:.3f}".format(df.loc[i]['classifier'], df.loc[i]['auroc']), **kwargs)
+        else:
+            for i in df.index:
+                ax.plot(df.loc[i]['fpr'],
+                    df.loc[i]['tpr'],
+                    label = "{}, AUC={:.3f}".format(df.loc[i]['classifier'], df.loc[i]['auroc']), **kwargs)
 
         ax.plot([0,1], [0,1], color='black', linestyle='--')
         ax.set_xticks(np.arange(0.0, 1.1, step=0.1))
@@ -354,29 +403,38 @@ class Benchmark:
 
 
         df=self.data[self.data['dataset'] == dataset_name]
-
         df.reset_index(inplace=True)
         assert(len(df)>0)
-        fig = plt.figure(figsize=(16,12))
         linestyles = ['-', '--', '-.', ':', 'solid', 'dashed', 'dashdot', 'dotted']
         colors = ['0.4','0.4','0.4','0.4','0.8','0.8','0.8','0.8']
 
-        if new_results is not None:
-            assert(isinstance(new_results,dict))
-            df=df.append(new_results, ignore_index=True)
-            linestyles.append('-')
-            colors.append('red')
+
 
         if ax is None:
             fig, ax = plt.subplots(figsize=(16,12))
-        linestyles = iter(linestyles)
-        colors = iter(colors)
 
-        for i in df.index:
-            ax.plot(df.loc[i]['rec'],
-                df.loc[i]['prec'],
-                color = next(colors), linestyle=next(linestyles),
-                label = "{}, f1_score={:.3f}, auprc={:.3f}".format(df.loc[i]['classifier'],df.loc[i]['f1_score'], df.loc[i]['auprc']), **kwargs)
+        if new_results is not None:
+            assert(isinstance(new_results, dict))
+            new_results_tmp=copy.deepcopy(new_results)
+            new_results_tmp[dataset_name]['classifier']=new_results_tmp[dataset_name]['classifier'].__class__.__name__
+            if isinstance(new_results_tmp[dataset_name], dict):
+                df=df.append(new_results_tmp[dataset_name], ignore_index=True)
+            else:
+                df=df.append(new_results_tmp, ignore_index=True)
+            linestyles.append('-')
+            colors.append('red')
+            linestyles = iter(linestyles)
+            colors = iter(colors)
+            for i in df.index:
+                    ax.plot(df.loc[i]['rec'],
+                        df.loc[i]['prec'],
+                        color = next(colors), linestyle=next(linestyles),
+                        label = "{}, f1_score={:.3f}, auprc={:.3f}".format(df.loc[i]['classifier'],df.loc[i]['f1_score'], df.loc[i]['auprc']), **kwargs)
+        else:
+            for i in df.index:
+                ax.plot(df.loc[i]['rec'],
+                    df.loc[i]['prec'],
+                    label = "{}, f1_score={:.3f}, auprc={:.3f}".format(df.loc[i]['classifier'],df.loc[i]['f1_score'], df.loc[i]['auprc']), **kwargs)
 
         ax.plot([0,1], [0.5,0.5], color='black', linestyle='--')
         ax.set_xticks(np.arange(0.0, 1.1, step=0.1))
@@ -391,7 +449,7 @@ class Benchmark:
         return fig, ax
 
 
-    def plot_parallel_coordinates(self, datasets=None, ax=None, benchmarked_results=None, **kwargs):
+    def plot_parallel_coordinates(self, datasets=None, ax=None, new_results=None, **kwargs):
 
         '''
         A method that plots a parallel coordinate plot for the whole benchmark with or without the additional benchmarked method.
@@ -410,38 +468,49 @@ class Benchmark:
         if ax is None:
             fig, ax = plt.subplots(figsize=(25,12))
 
-
+        df=self.data
         if datasets is None:
             datasets=self.list_datasets()
         if not isinstance(datasets, list):
             datasets = [datasets]
+        df=df.pivot('classifier', columns='dataset', values='auroc')[datasets]
 
-        # getting performance of all the classifiers, and limiting to the listed datasets
-        df=self.data.pivot('classifier', columns='dataset', values='auroc')[datasets]
 
         # if no dataset is added, just subtract mean performance for all datasets
-        if benchmarked_results is None:
+        if new_results is None:
             df=df-df.mean()
-        #otherwise, use  provided results as a reference
+            #otherwise, use  provided results as a reference
         else:
-            df=df-pd.Series(benchmarked_results)
+            z=pd.DataFrame.from_dict(new_results).transpose()
+            z.drop('name',inplace=True)
+            z['classifier']=new_results['name']
+            z=z.pivot('classifier', columns='dataset', values='auroc')[datasets]
+            df=df-z.loc[new_results['name']]
 
         #columns - classifiers, rows-datasets
         df=df.transpose()
         df['legend']=df.index
-        ax=pd.plotting.parallel_coordinates(df, 'legend', #color_continuous_scale=px.colors.sequential.Blues,
-                                     #color=["lime", "tomato","dodgerblue"],
-                                     alpha=0.2)
 
-        if benchmarked_results is None:
-            plt.title("Performance of classifiers compared to mean AUROC on DIGEN benchmark")
-            plt.ylabel('Difference vs mean AUROC value')
+        if new_results is None:
+            ax=pd.plotting.parallel_coordinates(df, 'legend', #color_continuous_scale=px.colors.sequential.Blues,
+                                     #color=["lime", "tomato","dodgerblue"],
+                                     alpha=0.3)
+#            ax.set_title("Performance of classifiers compared to mean AUROC on DIGEN benchmark")
+            ax.text(6.2, 0.01, 'Mean AUROC per dataset', color='red', fontsize=16)
+            ax.set_ylabel('Difference vs mean AUROC per dataset', fontsize=24)
 #            plt.title("Performance of classifiers compared to mean AUROC on DIGEN benchmark", fontsize=28)
 #            plt.ylabel('Difference vs mean AUROC value', fontsize=24)
-
         else:
-            plt.title("Performance of classifiers compared vs the method on DIGEN benchmark", fontsize=28)
-            plt.ylabel('Difference in AUROC vs benchmark performance', fontsize=24)
+            ax=pd.plotting.parallel_coordinates(df, 'legend', alpha=0.3)
+            ax.text(6.2, 0.01, new_results['name'], color='red', fontsize=16)
+#            plt.title("Performance of classifiers compared vs the method on DIGEN benchmark", fontsize=28)
+            ax.set_ylabel('Difference vs AUROC per dataset', fontsize=24)
+
+#        ax.set_xticks(np.arange(0.0, 1.1, step=0.1))
+        ax.set_xlabel("Classifiers", fontsize=24)
+        ax.set_yticks(np.arange(-0.5, 0.55, step=0.1))
+        ax.tick_params(axis='both', which='major', labelsize=20)
+
         plt.plot([0,7], [0,0], color='red', linestyle='--')
         ax.get_legend().remove()
         ax.spines['top'].set_visible(False)
@@ -457,7 +526,7 @@ class Benchmark:
 
 
 
-    def plot_heatmap(self, datasets=None, ax=None, benchmarked_results=None, **kwargs):
+    def plot_heatmap(self, datasets=None, ax=None, new_results=None, **kwargs):
 
         '''
         A method that plots a parallel coordinate plot for the whole benchmark with or without the additional benchmarked method.
@@ -473,66 +542,41 @@ class Benchmark:
             For further reference, see: evaluate 
         '''
 
-#        if ax is None:
-#            fig, ax = plt.subplots()
 
-
+        df=self.data #.pivot('classifier', columns='dataset', values='auroc')
+        # getting performance of all the classifiers, and limiting to the listed datasets
+        if new_results is not None:
+            z=pd.DataFrame.from_dict(new_results).transpose()
+            z.drop('name',inplace=True)
+            z['classifier']=new_results['name']
+            df=df.append(z)
         if datasets is None:
-            datasets=self.list_datasets()
+            if new_results is not None:
+                assert(isinstance(new_results, dict))
+                datasets=list(new_results.keys()).remove('name')
+            else:
+                datasets=self.list_datasets()
         if not isinstance(datasets, list):
             datasets = [datasets]
-        # getting performance of all the classifiers, and limiting to the listed datasets
-        df=self.data.pivot('classifier', columns='dataset', values='auroc')[datasets]
-        if benchmarked_results is not None:
-            df=df.append(pd.Series(benchmarked_results))
+        df=df.pivot('classifier', columns='dataset', values='auroc')[datasets]
         df=df.transpose()
-        g=sns.clustermap(df, cmap='Blues',  yticklabels=True, row_cluster=False)
+        if new_results is not None:
+#            g=sns.clustermap(df.astype(float).sort_values(by=new_results['name'],ascending=False), cmap='Blues',  yticklabels=True, row_cluster=False)
+            fig=sns.clustermap(df.astype(float).sort_values(by=new_results['name'],ascending=False), cmap='Blues',  yticklabels=True, row_cluster=True, **kwargs)
 
-#        plt.title("Similiarity of AUROCs scores of ML classifiers across different DIGEN problems") #fontsize=28
-#        plt.xticks(fontsize=20, rotation=90)
-#        plt.xticks(rotation=90)
+        else:
+#            g=sns.clustermap(df.astype(float),cmap='Blues',  yticklabels=True, row_cluster=False)
+            fig=sns.clustermap(df.astype(float),cmap='Blues',  yticklabels=True, row_cluster=True, **kwargs)
 
-#
-#
-#        plt.ylabel('Area under ROC curve') #fontsize=24
-##        col=ax.cax.get_position()
-#        ax.cax.set_position([col.x0+1, col.y0-0.35, col.width, col.height])
-#        plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5))
-#        ax.set_facecolor("white")
-#        plt.gcf().subplots_adjust(bottom=0.15)
+        fig.ax_heatmap.set_xlabel('')
+        fig.ax_heatmap.set_ylabel('')
+        plt.setp(fig.ax_heatmap.yaxis.get_majorticklabels(), rotation=0)
 
-
-        g.fig.set_figheight(16)
-        g.fig.set_figwidth(12)
-        col=g.cax.get_position()
-        g.cax.set_position([col.x0+1, col.y0-0.35, col.width, col.height])
-
-        rcParams.update({'figure.autolayout': True})
-        return g, ax
-
-
-
-
-
-
-'''
-est = ExtraTreesClassifier()
-
-
-best_models = digen.optimize_all(est, dataset_name)
-for best_model in best_models:
-    digen.plot_auroc(best_model, dataset_name)
-    digen.plot_auprc(best_model, dataset_name)
-digen.plot_summary(best_models)
-digen.plot_ranking(best_models)
-figen.plot_complexity(best_models)
-
-        ##############TODO :SET HYPERPARAMETERS
-        parameter_scopes=hyperparams_ExtraTrees(trial)
-digen.plot_complexity()
-digen.plot
-
-'''
+#        g.fig.set_figheight(16)
+#        g.fig.set_figwidth(12)
+        col=fig.cax.get_position()
+        fig.cax.set_position([col.x0+0.05, col.y0, col.width, col.height])
+        return fig, ax
 
 
 
@@ -540,12 +584,4 @@ digen.plot
 if __name__ == '__main__':
     benchmark = Benchmark()
     benchmark.list_datasets()
-#    dataset_name = 'F-GLXDKRS_0.175_0.861_5191'
-#    best_model = benchmark.optimize(est, dataset_name)
-#    benchmark.plot_auroc(best_model, dataset_name)
-#    benchmark.plot_auprc(best_model, dataset_name)
-
-#    est = XGBClassifier()
-#    optimize(est,'L-XG-FDSKR_0.188_0.875_7270')
-
 

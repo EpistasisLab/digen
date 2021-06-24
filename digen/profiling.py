@@ -3,7 +3,7 @@
 """
 Copyright (c) 2020 Patryk Orzechowski | Epistasis Lab | University of Pennsylvania
 
-DIGEN was developed at the University of Pennsylvania by Patryk Orzechowski (patryk.orzechowski@gmail.com).
+DIGEN was developed at the University of Pennsylvania by Patryk Orzechowski (patryk.orzechowski@gmail.com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software
 and associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -22,20 +22,12 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
 
-import pickle
-try:
-    import importlib.resources as importlib_resources
 
-except ImportError:
-    # In PY<3.7 fall-back to backported `importlib_resources`.
-    import importlib_resources
+import pandas as pd
+from pandas_profiling import ProfileReport
+import pathlib
 
-def initialize():
-    return pickle.loads(importlib_resources.read_binary(__name__, 'chartsdata.pkl'))
-
-def load_datasets():
-    return importlib_resources.read_text(__name__, 'stats.csv')
-
+#from digen import Benchmark
 from .benchmark import (
     Benchmark
 )
@@ -44,4 +36,28 @@ from .dataset import (
     Dataset
 )
 
-from .benchmark import __version__
+
+
+def profile_dataset(dataname, write_dir, repository='../datasets/'):
+    '''
+    Performs pandas profiling of datasets and writes the results to write_dir
+    '''
+
+    b=Benchmark()
+    print(f'Processing {dataname}')
+    df = b.load_dataset(dataname, local_cache_dir=repository)
+    write_path = write_dir.joinpath(dataname + '.html')
+    profile = ProfileReport(df, title=dataname, explorative=True)
+    profile.to_file(write_path)
+
+
+if __name__ =='__main__':
+    write_dir = pathlib.Path('docs/profile/')
+    write_dir.mkdir(exist_ok=True)
+
+    b=Benchmark()
+    datasets = b.list_datasets()
+
+    for dataset in datasets:
+        write_path = write_dir.joinpath(dataset + '.html')
+        profile_dataset(dataset, write_dir)
