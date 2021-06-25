@@ -1,0 +1,25 @@
+site_name: DIGEN
+nav : 
+   - Home: index.md
+   - Methods: methods.md
+   - Benchmark: benchmark.md
+   - FAQ: faq.md
+   
+# Thank you Dmitry Shachnev (https://github.com/mitya57/python-markdown-math) 
+markdown_extensions: 
+   - mdx_math:
+       enable_dollar_delimiter: True #for use of inline $..$
+   - fenced_code
+   - codehilite
+   - footnotes
+
+plugins:
+   - search
+   - bibtex:
+      bib_file: "references.bib"
+      cite_style: "pandoc"
+
+# Required to load the MathJax javascript for the mdx_math.py
+extra_javascript: ['https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML']
+
+theme: readthedocs
