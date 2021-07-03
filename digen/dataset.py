@@ -21,7 +21,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-GITHUB_URL = 'https://github.com/EpistasisLab/digen/tree/main/datasets'
+GITHUB_URL = 'https://github.com/EpistasisLab/digen/blob/main/datasets'
 suffix = '.tsv'
 
 
@@ -64,7 +64,7 @@ class Dataset:
     def get_hash(self):
         return self.hash
 
-    def get_dataset_url(self, GITHUB_URL, dataset_name=None, suffix=suffix):
+    def get_dataset_url(self, dataset_name, suffix=suffix):
 
         '''
         A method that downloads from DIGEN a dataset dataset_name from GITHUB_URL.
@@ -72,22 +72,23 @@ class Dataset:
 
         if dataset_name:
             self.dataset_name=dataset_name
-        dataset_url = '{GITHUB_URL}/{DATASET_NAME}/{DATASET_NAME}{SUFFIX}'.format(
+        dataset_url = '{GITHUB_URL}/{DATASET_NAME}/{DATASET_NAME}{SUFFIX}?raw=true'.format(
                                     GITHUB_URL=GITHUB_URL,
-                                    DATASET_NAME=self.dataset_name,
+                                    DATASET_NAME=dataset_name,
                                     SUFFIX=suffix
                                     )
 
         re = requests.get(dataset_url)
         if re.status_code != 200:
             raise ValueError('Dataset not found in DIGEN.')
+        print('Downloading '+dataset_name+' from '+ dataset_url)
         return dataset_url
 
 
-#    def load_dataset(self, separate_target=False, local_cache_dir=None):
-    def load_dataset(self, separate_target=False, local_cache_dir='../datasets/'):
+    def load_dataset(self, separate_target=False, local_cache_dir=None):
 
-        """Downloads a dataset from the DIGEN and returns it.
+        """
+        Downloads a dataset from the DIGEN and returns it.
 
         Parameters
         ----------
@@ -105,24 +106,27 @@ class Dataset:
 
         """
 
-        if local_cache_dir is None:
-            dataset_path = self.get_dataset_url(GITHUB_URL, self.dataset_name, suffix)
-        else:
-            dataset_path = os.path.join(local_cache_dir, self.dataset_name+suffix)
-        dataset = pd.read_csv(dataset_path, sep='\t', compression='gzip')
 
-        if not os.path.exists(dataset_path):
-            dataset_dir = os.path.split(dataset_path)[0]
-            # cache the result
-            if not os.path.isdir(dataset_dir):
-                os.makedirs(dataset_dir)
-                dataset.to_csv(dataset_path, sep='\t', compression='gzip',
-                        index=False)
+        if local_cache_dir is None:
+            local_cache_dir='.'
+            if os.path.exists(os.path.join(local_cache_dir, self.dataset_name+suffix)):
+                dataset_path = os.path.join(local_cache_dir, self.dataset_name+suffix)
+            elif os.path.exists(os.path.join(local_cache_dir, self.dataset, self.dataset_name+suffix)):
+                dataset_path = os.path.join(local_cache_dir, self.dataset, self.dataset_name+suffix)
+            else:
+                dataset_path = self.get_dataset_url(self.dataset_name, suffix)
+        else:
+            if os.path.exists(os.path.join(local_cache_dir, self.dataset_name+suffix)):
+                dataset_path = os.path.join(local_cache_dir, self.dataset_name+suffix)
+            else:
+                raise OSError('File not found: '+os.path.join(local_cache_dir, self.dataset_name+suffix))
+        dataset = pd.read_csv(dataset_path, sep='\t', compression='gzip')
+        if not os.path.exists(os.path.join(local_cache_dir, self.dataset_name+suffix)):
+            dataset.to_csv(os.path.join(local_cache_dir, self.dataset_name+suffix), sep='\t', compression='gzip', index=False)
         # prepare the output
         if separate_target:
             X = dataset.drop('target', axis=1).values
             y = dataset['target'].values
-
             return (X, y)
         else:
             return dataset

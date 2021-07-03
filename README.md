@@ -12,6 +12,26 @@ DIGEN provides comprehensive information on the datasets, including:
 - a boxplot with projected performance of the leading methods after hyper-parameter tuning (100 runs of each method started with different random seed)
 
 Apart from providing a collection of datasets and tuned ML methods, DIGEN provides tools to easily tune and optimize parameters of any novel ML method, as well as visualize its performance in comparison with the leading ones.
+DIGEN also offers tools for reproducibility.
+
+
+# Dependencies
+
+The following packages are required to use DIGEN:
+
+    pandas>=1.05
+    numpy>=1.19.5
+    optuna>=2.4.0
+    scikit-learn>=0.22.2
+    importlib_resources
+
+
+# Installing DIGEN
+
+The best way to install DIGEN is using pip, e.g. as a user:
+
+    pip install -U scikit-learn
+
 
 
 # Using DIGEN
@@ -23,7 +43,7 @@ Please refer to our online documentation at [https://epistasislab.github.io/dige
 
 
 # Tutorials
-[DIGEN Tutorial](https://github.com/EpistasisLab/digen/blob/main/DIGEN%20Tutorial.ipynb) is a great place to start
+[DIGEN Tutorial](https://github.com/EpistasisLab/digen/blob/main/DIGEN%20Tutorial.ipynb) is a great place to start exploring our package.
 For advanced use, e.g. customization, manipulations with the charts, additional statistics on the collection, please check our [Advanced Tutorial](https://github.com/EpistasisLab/digen/blob/main/DIGEN%20Advanced.ipynb).
 
 

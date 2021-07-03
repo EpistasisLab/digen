@@ -25,7 +25,7 @@ GITHUB_URL = 'https://github.com/EpistasisLab/digen/tree/main/datasets'
 suffix = '.tsv'
 
 
-__version__='0.0.1'
+__version__='0.0.2'
 
 import os
 #import pkgutil
@@ -132,8 +132,6 @@ class Benchmark:
         '''
         return self.models
 
-
-
     def load_dataset(self, dataset_name, separate_target=False, local_cache_dir=None):
 
         """Downloads a dataset from the DIGEN and returns it. For convenience, instead of using Dataset interface.
@@ -156,6 +154,9 @@ class Benchmark:
 
         """
 
+        seedmap=dict(map(lambda x : (x.split('_')[0],x.split('_')[1]), self.list_datasets()))
+        if len(dataset_name.split('_'))==1:
+            dataset_name=dataset_name+'_'+seedmap[dataset_name]
         dataset = Dataset(dataset_name)
         return dataset.load_dataset(separate_target=separate_target, local_cache_dir=local_cache_dir)
 
@@ -553,7 +554,8 @@ class Benchmark:
         if datasets is None:
             if new_results is not None:
                 assert(isinstance(new_results, dict))
-                datasets=list(new_results.keys()).remove('name')
+                datasets=list(new_results.keys())
+                datasets.remove('name')
             else:
                 datasets=self.list_datasets()
         if not isinstance(datasets, list):
@@ -562,7 +564,7 @@ class Benchmark:
         df=df.transpose()
         if new_results is not None:
 #            g=sns.clustermap(df.astype(float).sort_values(by=new_results['name'],ascending=False), cmap='Blues',  yticklabels=True, row_cluster=False)
-            fig=sns.clustermap(df.astype(float).sort_values(by=new_results['name'],ascending=False), cmap='Blues',  yticklabels=True, row_cluster=True, **kwargs)
+            fig=sns.clustermap(df.astype(float).sort_values(by=new_results['name'],ascending=False), cmap='Blues',  yticklabels=True, row_cluster=False, **kwargs)
 
         else:
 #            g=sns.clustermap(df.astype(float),cmap='Blues',  yticklabels=True, row_cluster=False)
