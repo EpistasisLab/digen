@@ -30,11 +30,12 @@ The following packages are required to use DIGEN:
 
 The best way to install DIGEN is using pip, e.g. as a user:
 
-    pip install -U scikit-learn
-
+    pip install -U digen
 
 
 # Using DIGEN
+
+A non-peer reviewed paper is available at https://arxiv.org/pdf/2107.06475.pdf
 
 Apart from the datasets, DIGEN provides a comprehensive toolbox for analyzing the performance of a chosen ML method.
 DIGEN uses [Optuna](https://github.com/optuna/optuna), a state of the art framework for optimizing hyper-parameters 
@@ -42,7 +43,21 @@ DIGEN uses [Optuna](https://github.com/optuna/optuna), a state of the art framew
 Please refer to our online documentation at [https://epistasislab.github.io/digen](https://epistasislab.github.io/digen)
 
 
+# Citing DIGEN
+
+
+If you found this resource to be helpful, please cite it the following way:
+
+@article{orzechowski2021generative,
+  title={Generative and reproducible benchmarks for comprehensive evaluation of machine learning classifiers},
+  author={Orzechowski, Patryk and Moore, Jason H},
+  journal={arXiv preprint arXiv:2107.06475},
+  year={2021}
+}
+
+
 # Tutorials
+
 [DIGEN Tutorial](https://github.com/EpistasisLab/digen/blob/main/DIGEN%20Tutorial.ipynb) is a great place to start exploring our package.
 For advanced use, e.g. customization, manipulations with the charts, additional statistics on the collection, please check our [Advanced Tutorial](https://github.com/EpistasisLab/digen/blob/main/DIGEN%20Advanced.ipynb).
 
