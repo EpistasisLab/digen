@@ -48,13 +48,14 @@ Please refer to our online documentation at [https://epistasislab.github.io/dige
 
 If you found this resource to be helpful, please cite it the following way:
 
+```
 @article{orzechowski2021generative,
   title={Generative and reproducible benchmarks for comprehensive evaluation of machine learning classifiers},
   author={Orzechowski, Patryk and Moore, Jason H},
   journal={arXiv preprint arXiv:2107.06475},
   year={2021}
 }
-
+```
 
 # Tutorials
 
