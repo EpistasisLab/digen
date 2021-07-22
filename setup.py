@@ -9,7 +9,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='digen',
-    version='0.0.2',
+    version='0.0.3',
     author='Patryk Orzechowski',
     author_email=('patryk.orzechowski@gmail.com'),
     packages=['digen'],

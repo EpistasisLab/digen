@@ -50,38 +50,44 @@ class Dataset:
     def __init__(self, dataset_name):
         df=pd.read_csv(StringIO(load_datasets()), sep=',', index_col='dataset')
         self.dataset_name=dataset_name
+        self.random_state=int(dataset_name.split('_')[-1])
         self.model=df.loc[dataset_name]['indiv']
         self.hash=df.loc[dataset_name]['hash']
 
 
-    def get_random_state(self, dataset_name):
-        return int(dataset_name.split('_')[-1])
+    def get_random_state(self):
+        return self.random_state
+
+    def get_name(self):
+        return self.dataset_name
+
+    def get_shortname(self):
+        return self.dataset_name.split('_')[0]
 
     def get_model(self):
         return self.model
 
-
     def get_hash(self):
         return self.hash
 
-    def get_dataset_url(self, dataset_name, suffix=suffix):
+    def get_dataset_url(self, suffix=suffix):
 
         '''
         A method that downloads from DIGEN a dataset dataset_name from GITHUB_URL.
         '''
 
-        if dataset_name:
-            self.dataset_name=dataset_name
+#        if dataset_name:
+#            self.dataset_name=dataset_name
         dataset_url = '{GITHUB_URL}/{DATASET_NAME}/{DATASET_NAME}{SUFFIX}?raw=true'.format(
                                     GITHUB_URL=GITHUB_URL,
-                                    DATASET_NAME=dataset_name,
+                                    DATASET_NAME=self.dataset_name,
                                     SUFFIX=suffix
                                     )
 
         re = requests.get(dataset_url)
         if re.status_code != 200:
             raise ValueError('Dataset not found in DIGEN.')
-        print('Downloading '+dataset_name+' from '+ dataset_url)
+        print('Downloading '+ self.dataset_name +' from '+ dataset_url)
         return dataset_url
 
 
@@ -111,10 +117,10 @@ class Dataset:
             local_cache_dir='.'
             if os.path.exists(os.path.join(local_cache_dir, self.dataset_name+suffix)):
                 dataset_path = os.path.join(local_cache_dir, self.dataset_name+suffix)
-            elif os.path.exists(os.path.join(local_cache_dir, self.dataset, self.dataset_name+suffix)):
-                dataset_path = os.path.join(local_cache_dir, self.dataset, self.dataset_name+suffix)
+            elif os.path.exists(os.path.join(local_cache_dir, self.dataset_name, self.dataset_name+suffix)):
+                dataset_path = os.path.join(local_cache_dir, self.dataset_name, self.dataset_name+suffix)
             else:
-                dataset_path = self.get_dataset_url(self.dataset_name, suffix)
+                dataset_path = self.get_dataset_url(suffix)
         else:
             if os.path.exists(os.path.join(local_cache_dir, self.dataset_name+suffix)):
                 dataset_path = os.path.join(local_cache_dir, self.dataset_name+suffix)

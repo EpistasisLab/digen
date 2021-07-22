@@ -25,7 +25,7 @@ GITHUB_URL = 'https://github.com/EpistasisLab/digen/tree/main/datasets'
 suffix = '.tsv'
 
 
-__version__='0.0.2'
+__version__='0.0.3'
 
 import os
 #import pkgutil
@@ -97,6 +97,25 @@ class Benchmark:
         self.models=df[['indiv']].to_dict()['indiv']
         self.hashes=df[['hash']].to_dict()['hash']
 
+
+
+    def _fullname(self, dataset_name):
+        '''
+        This method gets proper full name of a DIGEN dataset, no matter how you pass the argument, e.g. 10, digen10 or digen10_8322
+ 
+        Returns
+        --------
+        Properly annotated full name of a DIGEN dataset, e.g. digen10_8322
+        '''
+
+        seedmap=dict(map(lambda x : (x.split('_')[0],x.split('_')[1]), self.list_datasets()))
+        if type(dataset_name) is int:
+            dataset_name='digen'+str(dataset_name)
+        if len(dataset_name.split('_'))==1:
+            dataset_name=dataset_name+'_'+seedmap[dataset_name]
+        return dataset_name
+
+
     def list_methods(self):
         '''
         This method lists all the methods included in the benchmark.
@@ -154,15 +173,8 @@ class Benchmark:
 
         """
 
-        seedmap=dict(map(lambda x : (x.split('_')[0],x.split('_')[1]), self.list_datasets()))
-        if len(dataset_name.split('_'))==1:
-            dataset_name=dataset_name+'_'+seedmap[dataset_name]
-        dataset = Dataset(dataset_name)
+        dataset = Dataset(self._fullname(dataset_name))
         return dataset.load_dataset(separate_target=separate_target, local_cache_dir=local_cache_dir)
-
-
-
-
 
 
 
@@ -194,12 +206,13 @@ class Benchmark:
             datasets = self.list_datasets()
         if not isinstance(datasets, list):
             datasets = [datasets]
+        datasets=list(map(lambda x : self._fullname(x), datasets))
 
         for dataset_name in datasets:
             print('Optimizing ' + est.__class__.__name__ + ' on ' + dataset_name)
 
             dataset = Dataset(dataset_name)
-            random_state = dataset.get_random_state(dataset_name)
+            random_state = dataset.get_random_state()
             random.seed(random_state)
             np.random.seed(random_state)
 
@@ -213,17 +226,12 @@ class Benchmark:
                                   storage=storage, load_if_exists=True)
 
 
-#            X, y = dataset.load_dataset(dataset_name, separate_target=True, local_cache_dir=local_cache_dir)
             X, y = dataset.load_dataset(separate_target=True, local_cache_dir=local_cache_dir)
 
             X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=0.2, random_state=random_state)
 
             study.optimize(lambda trial: self._objective(trial, X_train, y_train, est, parameter_scopes, random_state), n_trials=self.n_trials, timeout=self.timeout)
-###            best_models[dataset_name] = clone(est).set_params(**study.best_trial.user_attrs['params'])
             best_models[dataset_name] = self.evaluate( clone(est).set_params(**study.best_trial.user_attrs['params']), dataset_name, local_cache_dir)[dataset_name]
-#            best_models[dataset_name] = clone(est.__class__(**study.best_trial.user_attrs['params']))
-#            print(str(best_models))
-#        return best_models
         best_models['name']=est.__class__.__name__ 
         return best_models
 
@@ -245,10 +253,13 @@ class Benchmark:
             datasets = self.list_datasets()
         if not isinstance(datasets, list):
             datasets = [datasets]
+        datasets=list(map(lambda x : self._fullname(x), datasets))
+
         results={}
+
         for dataset_name in datasets:
             dataset = Dataset(dataset_name)
-            random_state = dataset.get_random_state(dataset_name)
+            random_state = dataset.get_random_state()
             random.seed(random_state)
             np.random.seed(random_state)
 
@@ -338,7 +349,7 @@ class Benchmark:
             For further reference, see: evaluate 
 
         '''
-
+        dataset_name=self._fullname(dataset_name)
         df=self.data[self.data['dataset'] == dataset_name]
         df.reset_index(inplace=True)
         assert(len(df)>0)
@@ -402,7 +413,7 @@ class Benchmark:
         '''
 
 
-
+        dataset_name=self._fullname(dataset_name)
         df=self.data[self.data['dataset'] == dataset_name]
         df.reset_index(inplace=True)
         assert(len(df)>0)
@@ -474,6 +485,8 @@ class Benchmark:
             datasets=self.list_datasets()
         if not isinstance(datasets, list):
             datasets = [datasets]
+        datasets=list(map(lambda x : self._fullname(x), datasets))
+
         df=df.pivot('classifier', columns='dataset', values='auroc')[datasets]
 
 
@@ -497,13 +510,13 @@ class Benchmark:
                                      #color=["lime", "tomato","dodgerblue"],
                                      alpha=0.3)
 #            ax.set_title("Performance of classifiers compared to mean AUROC on DIGEN benchmark")
-            ax.text(6.2, 0.01, 'Mean AUROC per dataset', color='red', fontsize=16)
+            ax.text(6, -0.03, 'Mean AUROC per dataset', color='red', fontsize=16)
             ax.set_ylabel('Difference vs mean AUROC per dataset', fontsize=24)
 #            plt.title("Performance of classifiers compared to mean AUROC on DIGEN benchmark", fontsize=28)
 #            plt.ylabel('Difference vs mean AUROC value', fontsize=24)
         else:
             ax=pd.plotting.parallel_coordinates(df, 'legend', alpha=0.3)
-            ax.text(6.2, 0.01, new_results['name'], color='red', fontsize=16)
+            ax.text(6, -0.03, new_results['name'], color='red', fontsize=16)
 #            plt.title("Performance of classifiers compared vs the method on DIGEN benchmark", fontsize=28)
             ax.set_ylabel('Difference vs AUROC per dataset', fontsize=24)
 
@@ -543,7 +556,6 @@ class Benchmark:
             For further reference, see: evaluate 
         '''
 
-
         df=self.data #.pivot('classifier', columns='dataset', values='auroc')
         # getting performance of all the classifiers, and limiting to the listed datasets
         if new_results is not None:
@@ -560,24 +572,25 @@ class Benchmark:
                 datasets=self.list_datasets()
         if not isinstance(datasets, list):
             datasets = [datasets]
+        datasets=list(map(lambda x : self._fullname(x), datasets))
+
+
         df=df.pivot('classifier', columns='dataset', values='auroc')[datasets]
         df=df.transpose()
         if new_results is not None:
-#            g=sns.clustermap(df.astype(float).sort_values(by=new_results['name'],ascending=False), cmap='Blues',  yticklabels=True, row_cluster=False)
-            fig=sns.clustermap(df.astype(float).sort_values(by=new_results['name'],ascending=False), cmap='Blues',  yticklabels=True, row_cluster=False, **kwargs)
+            fig=sns.clustermap(df.astype(float).sort_values(by=new_results['name'],ascending=False), cmap='Blues', yticklabels=True, row_cluster=False, **kwargs)
 
         else:
-#            g=sns.clustermap(df.astype(float),cmap='Blues',  yticklabels=True, row_cluster=False)
             fig=sns.clustermap(df.astype(float),cmap='Blues',  yticklabels=True, row_cluster=True, **kwargs)
+
 
         fig.ax_heatmap.set_xlabel('')
         fig.ax_heatmap.set_ylabel('')
         plt.setp(fig.ax_heatmap.yaxis.get_majorticklabels(), rotation=0)
 
-#        g.fig.set_figheight(16)
-#        g.fig.set_figwidth(12)
         col=fig.cax.get_position()
-        fig.cax.set_position([col.x0+0.05, col.y0, col.width, col.height])
+        fig.cax.set_position([col.x0+1, col.y0-0.35, col.width, col.height])
+
         return fig, ax
 
 
