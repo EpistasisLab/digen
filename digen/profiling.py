@@ -21,21 +21,12 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-
-
-import pandas as pd
-from pandas_profiling import ProfileReport
 import pathlib
 
-#from digen import Benchmark
-from .benchmark import (
-    Benchmark
-)
+from pandas_profiling import ProfileReport
 
-from .dataset import (
-    Dataset
-)
-
+# from digen import Benchmark
+from .benchmark import Benchmark
 
 
 def profile_dataset(dataname, write_dir, repository='../datasets/'):
@@ -43,7 +34,7 @@ def profile_dataset(dataname, write_dir, repository='../datasets/'):
     Performs pandas profiling of datasets and writes the results to write_dir
     '''
 
-    b=Benchmark()
+    b = Benchmark()
     print(f'Processing {dataname}')
     df = b.load_dataset(dataname, local_cache_dir=repository)
     write_path = write_dir.joinpath(dataname + '.html')
@@ -51,11 +42,11 @@ def profile_dataset(dataname, write_dir, repository='../datasets/'):
     profile.to_file(write_path)
 
 
-if __name__ =='__main__':
+if __name__ == '__main__':
     write_dir = pathlib.Path('docs/profile/')
     write_dir.mkdir(exist_ok=True)
 
-    b=Benchmark()
+    b = Benchmark()
     datasets = b.list_datasets()
 
     for dataset in datasets:
