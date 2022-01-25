@@ -268,8 +268,13 @@ class Benchmark:
             X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=0.2, random_state=random_state)	
 
             est.fit(X_train, y_train)
-            yproba = est.predict_proba(X_test)[::,1]
+
             y_pred = est.predict(X_test)
+            if hasattr(est, "predict_proba"):
+                yproba = est.predict_proba(X_test)[:, 1]
+            else:
+                yproba = y_pred
+
             precision = precision_score(y_test, y_pred)
             recall = recall_score(y_test, y_pred)
             fpr, tpr, _ = roc_curve(y_test,  yproba)
