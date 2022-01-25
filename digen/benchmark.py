@@ -21,38 +21,30 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-GITHUB_URL = 'https://github.com/EpistasisLab/digen/tree/main/datasets'
-suffix = '.tsv'
-
-
-__version__='0.0.3'
-
-import os
-#import pkgutil
-
-
-import pandas as pd
-import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
-import optuna
-import pickle
-import random
 import copy
-
-
-from sklearn.metrics import roc_auc_score
-from sklearn.base import clone
-from sklearn.model_selection import train_test_split, StratifiedKFold
+import random
 from io import StringIO
-from sklearn.metrics import roc_auc_score, roc_curve, precision_score, auc, recall_score, precision_recall_curve, f1_score
-from xgboost import XGBClassifier
+
+import matplotlib.pyplot as plt
+import numpy as np
+import optuna
+import pandas as pd
+import seaborn as sns
 from matplotlib import rcParams
-rcParams.update({'figure.autolayout': True})
+from sklearn.base import clone, BaseEstimator
+from sklearn.metrics import (roc_auc_score, roc_curve, precision_score, auc, recall_score, precision_recall_curve, \
+                             f1_score)
+from sklearn.model_selection import train_test_split, StratifiedKFold
 
 from . import initialize, load_datasets
 from .dataset import Dataset
 
+rcParams.update({'figure.autolayout': True})
+
+GITHUB_URL = 'https://github.com/EpistasisLab/digen/tree/main/datasets'
+suffix = '.tsv'
+
+__version__ = '0.0.3'
 
 
 class Benchmark:
@@ -81,23 +73,21 @@ class Benchmark:
     def __init__(self, n_trials=200, timeout=10000, n_splits=10):
 
         data = initialize()
-        df=pd.DataFrame(data)
-        assert(len(df) > 0)
-        df['fpr'] = df['fpr'].str.slice(1,-1).str.split(', ').apply(lambda x : np.array([float(i) for i in x]))
-        df['tpr'] = df['tpr'].str.slice(1,-1).str.split(', ').apply(lambda x : np.array([float(i) for i in x]))
-        df['prec'] = df['prec'].str.slice(1,-1).str.split(', ').apply(lambda x : np.array([float(i) for i in x]))
-        df['rec'] = df['rec'].str.slice(1,-1).str.split(', ').apply(lambda x : np.array([float(i) for i in x]))
+        df = pd.DataFrame(data)
+        assert len(df) > 0
+        df['fpr'] = df['fpr'].str.slice(1, -1).str.split(', ').apply(lambda x: np.array([float(i) for i in x]))
+        df['tpr'] = df['tpr'].str.slice(1, -1).str.split(', ').apply(lambda x: np.array([float(i) for i in x]))
+        df['prec'] = df['prec'].str.slice(1, -1).str.split(', ').apply(lambda x: np.array([float(i) for i in x]))
+        df['rec'] = df['rec'].str.slice(1, -1).str.split(', ').apply(lambda x: np.array([float(i) for i in x]))
         self.data = df
         self.dataset_names = pd.unique(df['dataset']).tolist()
         self.n_trials = n_trials
         self.timeout = timeout
         self.n_splits = n_splits
 
-        df=pd.read_csv(StringIO(load_datasets()), sep=',', index_col='dataset')
-        self.models=df[['indiv']].to_dict()['indiv']
-        self.hashes=df[['hash']].to_dict()['hash']
-
-
+        df = pd.read_csv(StringIO(load_datasets()), sep=',', index_col='dataset')
+        self.models = df[['indiv']].to_dict()['indiv']
+        self.hashes = df[['hash']].to_dict()['hash']
 
     def _fullname(self, dataset_name):
         '''
@@ -108,13 +98,12 @@ class Benchmark:
         Properly annotated full name of a DIGEN dataset, e.g. digen10_8322
         '''
 
-        seedmap=dict(map(lambda x : (x.split('_')[0],x.split('_')[1]), self.list_datasets()))
+        seedmap = dict(map(lambda x: (x.split('_')[0], x.split('_')[1]), self.list_datasets()))
         if type(dataset_name) is int:
-            dataset_name='digen'+str(dataset_name)
-        if len(dataset_name.split('_'))==1:
-            dataset_name=dataset_name+'_'+seedmap[dataset_name]
+            dataset_name = 'digen' + str(dataset_name)
+        if len(dataset_name.split('_')) == 1:
+            dataset_name = dataset_name + '_' + seedmap[dataset_name]
         return dataset_name
-
 
     def list_methods(self):
         '''
@@ -138,7 +127,6 @@ class Benchmark:
             List of all names of the datasets included in DIGEN.
         '''
         return self.dataset_names
-
 
     def get_models(self):
         '''
@@ -176,8 +164,6 @@ class Benchmark:
         dataset = Dataset(self._fullname(dataset_name))
         return dataset.load_dataset(separate_target=separate_target, local_cache_dir=local_cache_dir)
 
-
-
     def optimize(self, est, parameter_scopes, datasets=None, storage='sqlite:///default.db', local_cache_dir=None):
         '''
         The method that optimizes hyper-parameters for a single or multiple DIGEN datasets.
@@ -202,11 +188,11 @@ class Benchmark:
         '''
 
         best_models = dict()
-        if (datasets == None):
+        if datasets is None:
             datasets = self.list_datasets()
         if not isinstance(datasets, list):
             datasets = [datasets]
-        datasets=list(map(lambda x : self._fullname(x), datasets))
+        datasets = [self._fullname(x) for x in datasets]
 
         for dataset_name in datasets:
             print('Optimizing ' + est.__class__.__name__ + ' on ' + dataset_name)
@@ -216,23 +202,26 @@ class Benchmark:
             random.seed(random_state)
             np.random.seed(random_state)
 
-            self.random_state=random.getstate()
-            self.random_state_np=np.random.get_state()
+            self.random_state = random.getstate()
+            self.random_state_np = np.random.get_state()
 
             sampler = optuna.samplers.TPESampler(seed=random_state)  # Make the sampler behave in a deterministic way.
-            study = optuna.create_study(study_name=dataset_name + '-' +  est.__class__.__name__ ,
-                                  direction='maximize',
-                                  sampler=sampler,
-                                  storage=storage, load_if_exists=True)
-
+            study = optuna.create_study(study_name=dataset_name + '-' + est.__class__.__name__,
+                                        direction='maximize',
+                                        sampler=sampler,
+                                        storage=storage, load_if_exists=True)
 
             X, y = dataset.load_dataset(separate_target=True, local_cache_dir=local_cache_dir)
 
-            X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=0.2, random_state=random_state)
+            X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=0.2,
+                                                                random_state=random_state)
 
-            study.optimize(lambda trial: self._objective(trial, X_train, y_train, est, parameter_scopes, random_state), n_trials=self.n_trials, timeout=self.timeout)
-            best_models[dataset_name] = self.evaluate( clone(est).set_params(**study.best_trial.user_attrs['params']), dataset_name, local_cache_dir)[dataset_name]
-        best_models['name']=est.__class__.__name__ 
+            study.optimize(lambda trial: self._objective(trial, X_train, y_train, est, parameter_scopes, random_state),
+                           n_trials=self.n_trials, timeout=self.timeout)
+            best_models[dataset_name] = \
+                self.evaluate(clone(est).set_params(**study.best_trial.user_attrs['params']), dataset_name,
+                              local_cache_dir)[dataset_name]
+        best_models['name'] = est.__class__.__name__
         return best_models
 
     def evaluate(self, est, datasets=None, local_cache_dir=None):
@@ -248,14 +237,13 @@ class Benchmark:
 
         '''
 
-
-        if (datasets == None):
+        if datasets is None:
             datasets = self.list_datasets()
         if not isinstance(datasets, list):
             datasets = [datasets]
-        datasets=list(map(lambda x : self._fullname(x), datasets))
+        datasets = [self._fullname(x) for x in datasets]
 
-        results={}
+        results = {}
 
         for dataset_name in datasets:
             dataset = Dataset(dataset_name)
@@ -263,35 +251,35 @@ class Benchmark:
             random.seed(random_state)
             np.random.seed(random_state)
 
-
             X, y = dataset.load_dataset(separate_target=True, local_cache_dir=local_cache_dir)
-            X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=0.2, random_state=random_state)	
+            X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=0.2,
+                                                                random_state=random_state)
 
             est.fit(X_train, y_train)
-            yproba = est.predict_proba(X_test)[::,1]
+
             y_pred = est.predict(X_test)
-            precision = precision_score(y_test, y_pred)
-            recall = recall_score(y_test, y_pred)
-            fpr, tpr, _ = roc_curve(y_test,  yproba)
+            if hasattr(est, "predict_proba"):
+                yproba = est.predict_proba(X_test)[:, 1]
+            else:
+                yproba = y_pred
+
+            fpr, tpr, _ = roc_curve(y_test, yproba)
             auroc = roc_auc_score(y_test, yproba)
-            #average_precision_score(y_test,yproba)
-            prec,rec, _ = precision_recall_curve(y_test, yproba)
-            results[dataset_name]={
-                    'dataset' : dataset_name,
-                    'classifier' : est,
-                    'fpr' : fpr,
-                    'tpr' : tpr,
-                    'prec' : prec,
-                    'rec' : rec,
-                    'auroc' : auroc,
-                    'f1_score' : f1_score(y_test,y_pred),
-                    'auprc' : auc(rec,prec)
-                }
+            # average_precision_score(y_test,yproba)
+            prec, rec, _ = precision_recall_curve(y_test, yproba)
+            results[dataset_name] = {
+                'dataset': dataset_name,
+                'classifier': est,
+                'fpr': fpr,
+                'tpr': tpr,
+                'prec': prec,
+                'rec': rec,
+                'auroc': auroc,
+                'f1_score': f1_score(y_test, y_pred),
+                'auprc': auc(rec, prec)
+            }
         results['name'] = est.__class__.__name__
         return results
-
-
-
 
     def _objective(self, trial, X, y, estimator, parameter_scopes, random_state):
         '''
@@ -299,11 +287,11 @@ class Benchmark:
         '''
         est = clone(estimator).set_params(**parameter_scopes(trial))
 
-        for a in ['random_state','seed']:
-            if hasattr(est,a):
-                setattr(est,a,random_state)
+        for a in ['random_state', 'seed']:
+            if hasattr(est, a):
+                setattr(est, a, random_state)
 
-        splits_auc=[]
+        splits_auc = []
         cv = StratifiedKFold(n_splits=self.n_splits, shuffle=True, random_state=random_state)
         for train_idx, test_idx in cv.split(X, y):
             split_num = len(splits_auc)
@@ -321,7 +309,7 @@ class Benchmark:
                 y_train = y.iloc[train_idx]
                 y_test = y.iloc[test_idx]
 
-            est.fit(X_train,y_train)
+            est.fit(X_train, y_train)
             auroc_test = roc_auc_score(y_test, est.predict(X_test))
             trial.set_user_attr('split_id', split_num)
             trial.set_user_attr('fold' + str(split_num) + '_auroc', auroc_test)
@@ -332,9 +320,6 @@ class Benchmark:
         trial.set_user_attr('seed', random_state)
         trial.set_user_attr('params', est.get_params())
         return np.mean(splits_auc)
-
-
-
 
     def plot_roc(self, dataset_name, ax=None, new_results=None, **kwargs):
         '''
@@ -349,26 +334,24 @@ class Benchmark:
             For further reference, see: evaluate 
 
         '''
-        dataset_name=self._fullname(dataset_name)
-        df=self.data[self.data['dataset'] == dataset_name]
+        dataset_name = self._fullname(dataset_name)
+        df = self.data[self.data['dataset'] == dataset_name]
         df.reset_index(inplace=True)
-        assert(len(df)>0)
+        assert (len(df) > 0)
         linestyles = ['-', '--', '-.', ':', 'solid', 'dashed', 'dashdot', 'dotted']
-        colors = ['0.4','0.4','0.4','0.4','0.8','0.8','0.8','0.8']
-
-
+        colors = ['0.4', '0.4', '0.4', '0.4', '0.8', '0.8', '0.8', '0.8']
 
         if ax is None:
-            fig, ax = plt.subplots(figsize=(16,12))
+            fig, ax = plt.subplots(figsize=(16, 12))
 
         if new_results is not None:
-            assert(isinstance(new_results, dict))
-            new_results_tmp=copy.deepcopy(new_results)
-            new_results_tmp[dataset_name]['classifier']=new_results_tmp['name']
+            assert (isinstance(new_results, dict))
+            new_results_tmp = copy.deepcopy(new_results)
+            new_results_tmp[dataset_name]['classifier'] = new_results_tmp['name']
             if isinstance(new_results_tmp[dataset_name], dict):
-                df=df.append(new_results_tmp[dataset_name], ignore_index=True)
+                df = df.append(new_results_tmp[dataset_name], ignore_index=True)
             else:
-                df=df.append(new_results_tmp, ignore_index=True)
+                df = df.append(new_results_tmp, ignore_index=True)
             linestyles.append('-')
             colors.append('red')
 
@@ -376,27 +359,25 @@ class Benchmark:
             colors = iter(colors)
             for i in df.index:
                 ax.plot(df.loc[i]['fpr'],
-                    df.loc[i]['tpr'],
-                    color = next(colors), linestyle=next(linestyles),
-                    label = "{}, AUC={:.3f}".format(df.loc[i]['classifier'], df.loc[i]['auroc']), **kwargs)
+                        df.loc[i]['tpr'],
+                        color=next(colors), linestyle=next(linestyles),
+                        label="{}, AUC={:.3f}".format(df.loc[i]['classifier'], df.loc[i]['auroc']), **kwargs)
         else:
             for i in df.index:
                 ax.plot(df.loc[i]['fpr'],
-                    df.loc[i]['tpr'],
-                    label = "{}, AUC={:.3f}".format(df.loc[i]['classifier'], df.loc[i]['auroc']), **kwargs)
+                        df.loc[i]['tpr'],
+                        label="{}, AUC={:.3f}".format(df.loc[i]['classifier'], df.loc[i]['auroc']), **kwargs)
 
-        ax.plot([0,1], [0,1], color='black', linestyle='--')
+        ax.plot([0, 1], [0, 1], color='black', linestyle='--')
         ax.set_xticks(np.arange(0.0, 1.1, step=0.1))
         ax.set_yticks(np.arange(0.0, 1.1, step=0.1))
         ax.tick_params(axis='both', which='major', labelsize=20)
         ax.set_xlabel("False Positive Rate", fontsize=24)
         ax.set_ylabel("True Positive Rate", fontsize=24)
         ax.set_title('ROC Curves Comparison', fontweight='bold', fontsize=28)
-        ax.legend(prop={'size':13}, loc='lower right')
+        ax.legend(prop={'size': 13}, loc='lower right')
         plt.gcf().subplots_adjust(bottom=0.15)
         return fig, ax
-
-
 
     def plot_prc(self, dataset_name, ax=None, new_results=None, **kwargs):
 
@@ -412,54 +393,52 @@ class Benchmark:
             For further reference, see: evaluate 
         '''
 
-
-        dataset_name=self._fullname(dataset_name)
-        df=self.data[self.data['dataset'] == dataset_name]
+        dataset_name = self._fullname(dataset_name)
+        df = self.data[self.data['dataset'] == dataset_name]
         df.reset_index(inplace=True)
-        assert(len(df)>0)
+        assert (len(df) > 0)
         linestyles = ['-', '--', '-.', ':', 'solid', 'dashed', 'dashdot', 'dotted']
-        colors = ['0.4','0.4','0.4','0.4','0.8','0.8','0.8','0.8']
-
-
+        colors = ['0.4', '0.4', '0.4', '0.4', '0.8', '0.8', '0.8', '0.8']
 
         if ax is None:
-            fig, ax = plt.subplots(figsize=(16,12))
+            fig, ax = plt.subplots(figsize=(16, 12))
 
         if new_results is not None:
-            assert(isinstance(new_results, dict))
-            new_results_tmp=copy.deepcopy(new_results)
-            new_results_tmp[dataset_name]['classifier']=new_results_tmp[dataset_name]['classifier'].__class__.__name__
+            assert (isinstance(new_results, dict))
+            new_results_tmp = copy.deepcopy(new_results)
+            new_results_tmp[dataset_name]['classifier'] = new_results_tmp[dataset_name]['classifier'].__class__.__name__
             if isinstance(new_results_tmp[dataset_name], dict):
-                df=df.append(new_results_tmp[dataset_name], ignore_index=True)
+                df = df.append(new_results_tmp[dataset_name], ignore_index=True)
             else:
-                df=df.append(new_results_tmp, ignore_index=True)
+                df = df.append(new_results_tmp, ignore_index=True)
             linestyles.append('-')
             colors.append('red')
             linestyles = iter(linestyles)
             colors = iter(colors)
             for i in df.index:
-                    ax.plot(df.loc[i]['rec'],
+                ax.plot(df.loc[i]['rec'],
                         df.loc[i]['prec'],
-                        color = next(colors), linestyle=next(linestyles),
-                        label = "{}, f1_score={:.3f}, auprc={:.3f}".format(df.loc[i]['classifier'],df.loc[i]['f1_score'], df.loc[i]['auprc']), **kwargs)
+                        color=next(colors), linestyle=next(linestyles),
+                        label="{}, f1_score={:.3f}, auprc={:.3f}".format(df.loc[i]['classifier'], df.loc[i]['f1_score'],
+                                                                         df.loc[i]['auprc']), **kwargs)
         else:
             for i in df.index:
                 ax.plot(df.loc[i]['rec'],
-                    df.loc[i]['prec'],
-                    label = "{}, f1_score={:.3f}, auprc={:.3f}".format(df.loc[i]['classifier'],df.loc[i]['f1_score'], df.loc[i]['auprc']), **kwargs)
+                        df.loc[i]['prec'],
+                        label="{}, f1_score={:.3f}, auprc={:.3f}".format(df.loc[i]['classifier'], df.loc[i]['f1_score'],
+                                                                         df.loc[i]['auprc']), **kwargs)
 
-        ax.plot([0,1], [0.5,0.5], color='black', linestyle='--')
+        ax.plot([0, 1], [0.5, 0.5], color='black', linestyle='--')
         ax.set_xticks(np.arange(0.0, 1.1, step=0.1))
         ax.set_xlabel("Recall", fontsize=24)
         ax.set_yticks(np.arange(0.4, 1.1, step=0.1))
         ax.tick_params(axis='both', which='major', labelsize=20)
         ax.set_ylabel("Precision", fontsize=24)
         ax.set_title('Precision-Recall Curve Comparison', fontweight='bold', fontsize=28)
-        ax.legend(prop={'size':13}, loc='lower right')
+        ax.legend(prop={'size': 13}, loc='lower right')
         plt.gcf().subplots_adjust(bottom=0.15)
-    
-        return fig, ax
 
+        return fig, ax
 
     def plot_parallel_coordinates(self, datasets=None, ax=None, new_results=None, **kwargs):
 
@@ -478,67 +457,64 @@ class Benchmark:
         '''
 
         if ax is None:
-            fig, ax = plt.subplots(figsize=(25,12))
+            fig, ax = plt.subplots(figsize=(25, 12))
 
-        df=self.data
+        df = self.data
         if datasets is None:
-            datasets=self.list_datasets()
+            datasets = self.list_datasets()
         if not isinstance(datasets, list):
             datasets = [datasets]
-        datasets=list(map(lambda x : self._fullname(x), datasets))
+        datasets = list(map(lambda x: self._fullname(x), datasets))
 
-        df=df.pivot('classifier', columns='dataset', values='auroc')[datasets]
-
+        df = df.pivot('classifier', columns='dataset', values='auroc')[datasets]
 
         # if no dataset is added, just subtract mean performance for all datasets
         if new_results is None:
-            df=df-df.mean()
-            #otherwise, use  provided results as a reference
+            df = df - df.mean()
+            # otherwise, use  provided results as a reference
         else:
-            z=pd.DataFrame.from_dict(new_results).transpose()
-            z.drop('name',inplace=True)
-            z['classifier']=new_results['name']
-            z=z.pivot('classifier', columns='dataset', values='auroc')[datasets]
-            df=df-z.loc[new_results['name']]
+            z = pd.DataFrame.from_dict(new_results).transpose()
+            z.drop('name', inplace=True)
+            z['classifier'] = new_results['name']
+            z = z.pivot('classifier', columns='dataset', values='auroc')[datasets]
+            df = df - z.loc[new_results['name']]
 
-        #columns - classifiers, rows-datasets
-        df=df.transpose()
-        df['legend']=df.index
+        # columns - classifiers, rows-datasets
+        df = df.transpose()
+        df['legend'] = df.index
 
         if new_results is None:
-            ax=pd.plotting.parallel_coordinates(df, 'legend', #color_continuous_scale=px.colors.sequential.Blues,
-                                     #color=["lime", "tomato","dodgerblue"],
-                                     alpha=0.3)
-#            ax.set_title("Performance of classifiers compared to mean AUROC on DIGEN benchmark")
+            ax = pd.plotting.parallel_coordinates(df, 'legend',  # color_continuous_scale=px.colors.sequential.Blues,
+                                                  # color=["lime", "tomato","dodgerblue"],
+                                                  alpha=0.3)
+            #            ax.set_title("Performance of classifiers compared to mean AUROC on DIGEN benchmark")
             ax.text(6, -0.03, 'Mean AUROC per dataset', color='red', fontsize=16)
             ax.set_ylabel('Difference vs mean AUROC per dataset', fontsize=24)
-#            plt.title("Performance of classifiers compared to mean AUROC on DIGEN benchmark", fontsize=28)
-#            plt.ylabel('Difference vs mean AUROC value', fontsize=24)
+        #            plt.title("Performance of classifiers compared to mean AUROC on DIGEN benchmark", fontsize=28)
+        #            plt.ylabel('Difference vs mean AUROC value', fontsize=24)
         else:
-            ax=pd.plotting.parallel_coordinates(df, 'legend', alpha=0.3)
+            ax = pd.plotting.parallel_coordinates(df, 'legend', alpha=0.3)
             ax.text(6, -0.03, new_results['name'], color='red', fontsize=16)
-#            plt.title("Performance of classifiers compared vs the method on DIGEN benchmark", fontsize=28)
+            #            plt.title("Performance of classifiers compared vs the method on DIGEN benchmark", fontsize=28)
             ax.set_ylabel('Difference vs AUROC per dataset', fontsize=24)
 
-#        ax.set_xticks(np.arange(0.0, 1.1, step=0.1))
+        #        ax.set_xticks(np.arange(0.0, 1.1, step=0.1))
         ax.set_xlabel("Classifiers", fontsize=24)
         ax.set_yticks(np.arange(-0.5, 0.55, step=0.1))
         ax.tick_params(axis='both', which='major', labelsize=20)
 
-        plt.plot([0,7], [0,0], color='red', linestyle='--')
+        plt.plot([0, 7], [0, 0], color='red', linestyle='--')
         ax.get_legend().remove()
         ax.spines['top'].set_visible(False)
         ax.spines['bottom'].set_visible(False)
         ax.grid(False)
         plt.xlabel('Classifiers')
         plt.xticks(rotation=90)
-#        plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5))
-#        ax.set_facecolor("white")
-#        plt.gcf().subplots_adjust(bottom=0.15)
+        #        plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5))
+        #        ax.set_facecolor("white")
+        #        plt.gcf().subplots_adjust(bottom=0.15)
 
         return fig, ax
-
-
 
     def plot_heatmap(self, datasets=None, ax=None, new_results=None, **kwargs):
 
@@ -556,47 +532,43 @@ class Benchmark:
             For further reference, see: evaluate 
         '''
 
-        df=self.data #.pivot('classifier', columns='dataset', values='auroc')
+        df = self.data  # .pivot('classifier', columns='dataset', values='auroc')
         # getting performance of all the classifiers, and limiting to the listed datasets
         if new_results is not None:
-            z=pd.DataFrame.from_dict(new_results).transpose()
-            z.drop('name',inplace=True)
-            z['classifier']=new_results['name']
-            df=df.append(z)
+            z = pd.DataFrame.from_dict(new_results).transpose()
+            z.drop('name', inplace=True)
+            z['classifier'] = new_results['name']
+            df = df.append(z)
         if datasets is None:
             if new_results is not None:
-                assert(isinstance(new_results, dict))
-                datasets=list(new_results.keys())
+                assert (isinstance(new_results, dict))
+                datasets = list(new_results.keys())
                 datasets.remove('name')
             else:
-                datasets=self.list_datasets()
+                datasets = self.list_datasets()
         if not isinstance(datasets, list):
             datasets = [datasets]
-        datasets=list(map(lambda x : self._fullname(x), datasets))
+        datasets = list(map(lambda x: self._fullname(x), datasets))
 
-
-        df=df.pivot('classifier', columns='dataset', values='auroc')[datasets]
-        df=df.transpose()
+        df = df.pivot('classifier', columns='dataset', values='auroc')[datasets]
+        df = df.transpose()
         if new_results is not None:
-            fig=sns.clustermap(df.astype(float).sort_values(by=new_results['name'],ascending=False), cmap='Blues', yticklabels=True, row_cluster=False, **kwargs)
+            fig = sns.clustermap(df.astype(float).sort_values(by=new_results['name'], ascending=False), cmap='Blues',
+                                 yticklabels=True, row_cluster=False, **kwargs)
 
         else:
-            fig=sns.clustermap(df.astype(float),cmap='Blues',  yticklabels=True, row_cluster=True, **kwargs)
-
+            fig = sns.clustermap(df.astype(float), cmap='Blues', yticklabels=True, row_cluster=True, **kwargs)
 
         fig.ax_heatmap.set_xlabel('')
         fig.ax_heatmap.set_ylabel('')
         plt.setp(fig.ax_heatmap.yaxis.get_majorticklabels(), rotation=0)
 
-        col=fig.cax.get_position()
-        fig.cax.set_position([col.x0+1, col.y0-0.35, col.width, col.height])
+        col = fig.cax.get_position()
+        fig.cax.set_position([col.x0 + 1, col.y0 - 0.35, col.width, col.height])
 
         return fig, ax
-
-
 
 
 if __name__ == '__main__':
     benchmark = Benchmark()
     benchmark.list_datasets()
-
