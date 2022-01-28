@@ -255,11 +255,12 @@ class Benchmark:
             X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=0.2,
                                                                 random_state=random_state)
 
-            est.fit(X_train, y_train)
+            new_est = clone(est)
+            new_est.fit(X_train, y_train)
 
-            y_pred = est.predict(X_test)
-            if hasattr(est, "predict_proba"):
-                yproba = est.predict_proba(X_test)[:, 1]
+            y_pred = new_est.predict(X_test)
+            if hasattr(new_est, "predict_proba"):
+                yproba = new_est.predict_proba(X_test)[:, 1]
             else:
                 yproba = y_pred
 
@@ -269,7 +270,7 @@ class Benchmark:
             prec, rec, _ = precision_recall_curve(y_test, yproba)
             results[dataset_name] = {
                 'dataset': dataset_name,
-                'classifier': est,
+                'classifier': new_est,
                 'fpr': fpr,
                 'tpr': tpr,
                 'prec': prec,
@@ -278,7 +279,7 @@ class Benchmark:
                 'f1_score': f1_score(y_test, y_pred),
                 'auprc': auc(rec, prec)
             }
-        results['name'] = est.__class__.__name__
+        results['name'] = new_est.__class__.__name__
         return results
 
     def _objective(self, trial, X, y, estimator, parameter_scopes, random_state):
