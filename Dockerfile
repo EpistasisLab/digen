@@ -36,7 +36,7 @@ RUN echo "$(python myMethod.py -d $dataset)"
 
 # Export all the files to the host
 FROM scratch as export
-COPY --from=image /app/* .
+COPY --from=image /app ./
 
 
 #### HOW TO USE: ####

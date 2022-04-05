@@ -9,7 +9,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='digen',
-    version='0.0.4',
+    version='0.0.5',
     author='Patryk Orzechowski',
     author_email=('patryk.orzechowski@gmail.com'),
     packages=['digen'],
@@ -22,15 +22,16 @@ setup(
     long_description_content_type='text/markdown',
     zip_safe=True,
     install_requires=['pandas>=1.0.5',
-                    'numpy>=1.19.5',
+                    'numpy>=1.21',
                     'scikit-learn>=0.22.2',
                     'optuna>=1.3.0',
                     'importlib-resources',
                     'matplotlib',
                     'deap>=1.3.0',
-                    'xgboost>=1.3.2'
+                    'xgboost>=1.3.2',
                     'requests',
-                    'lightgbm>=3.1.1'
+                    'lightgbm>=3.1.1',
+                    'seaborn>=0.11.2'
                    ],
     extras_require={
         'dev': ['scipy', 'pandas-profiling'],
