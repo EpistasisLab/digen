@@ -9,7 +9,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='digen',
-    version='0.0.3',
+    version='0.0.4',
     author='Patryk Orzechowski',
     author_email=('patryk.orzechowski@gmail.com'),
     packages=['digen'],
@@ -25,10 +25,15 @@ setup(
                     'numpy>=1.19.5',
                     'scikit-learn>=0.22.2',
                     'optuna>=1.3.0',
-                    'importlib-resources'
+                    'importlib-resources',
+                    'matplotlib',
+                    'deap>=1.3.0',
+                    'xgboost>=1.3.2'
+                    'requests',
+                    'lightgbm>=3.1.1'
                    ],
     extras_require={
-        'dev': ['numpy', 'scipy', 'matplotlib', 'seaborn', 'pandas-profiling'],
+        'dev': ['scipy', 'pandas-profiling'],
     },
 
     classifiers=[
@@ -37,10 +42,6 @@ setup(
         'Intended Audience :: Information Technology',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',

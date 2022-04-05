@@ -111,7 +111,6 @@ for key, equation in datamap.items():
         y[j] = func(*X.iloc[j]) if isinstance(X, pd.DataFrame) else func(*X[j, :])  # X
     org_y = y
     y = reclassify(y, 0.5)
-    X = get_random_data(int(args.rows), int(args.columns), seed)
 
     X.columns = list(map(lambda k: 'X' + str(k), range(X.shape[1])))
     X['target'] = y

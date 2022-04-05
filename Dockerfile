@@ -1,19 +1,23 @@
-FROM python:3.7-slim-buster as image
+FROM python:3.8.13-slim-buster as image
 
 MAINTAINER Patryk Orzechowski
 
 # Install required packages
-COPY requirements.txt .
+COPY docker/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 WORKDIR /app
-ADD generate.py generate.py
-ADD myMethod.py myMethod.py
+ADD docker/generate.py generate.py
+ADD docker/myMethod.py myMethod.py
 
 #Here argument required
 #ARG dataset
-ARG dataset
-ARG seed
+
+#Setting specific value
+ARG dataset=digen8
+
+#Setting specific seed
+ARG seed=4426
 
 # Set the sizes of the dataset. By default DIGEN has size 1000 x 10
 ARG rows=1000
@@ -28,7 +32,6 @@ RUN echo "$(python myMethod.py -d $dataset)"
 
 # Reproduce all the results for all the datasets and all classifiers (uncomment below). This may take several weeks!
 #RUN echo "$(python reproduce.py $dataset $rows $columns)"
-
 
 
 # Export all the files to the host
