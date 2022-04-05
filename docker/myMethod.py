@@ -11,10 +11,11 @@ parser.add_argument("-d", "--dataset", default=None, help="Specify a dataset (ot
                     required=False, nargs='?')
 args = parser.parse_args()
 
-datasets = benchmark.list_datasets()
-if args.dataset is not None:
-    assert (args.dataset in datasets)
-    datasets = args.dataset
+datasets = args.dataset
+if args.dataset is None:
+    datasets = benchmark.list_datasets()
+
+
 
 # Create your default class here or import from the package. As an example, we re benchmarking ExtraTreesClassifier from scikit-learn:
 from sklearn.ensemble import ExtraTreesClassifier
