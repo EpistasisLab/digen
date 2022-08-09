@@ -5,7 +5,7 @@ Diverse and Generative ML benchmark (DIGEN) is a modern machine learning benchma
 - a package to perform reproducible benchmarking that simplifies comparison of performance of the methods.
 
 DIGEN provides comprehensive information on the datasets, including:
-- ground truth - a mathematical formula presenting how the endpoint was generated for each of the datasets
+- ground truth - a mathematical formula presenting how the target was generated for each of the datasets
 - the results of exploratory analysis, which includes feature correlation and histogram showing how binary endpoint was calculated.
 - multiple statistics on the datasets, including the AUROC, AUPRC and F1 scores
 - each dataset comes with Reveiver-Operating Characteristics (ROC) and Precision-Recall (PRC) charts for tuned ML methods, 
